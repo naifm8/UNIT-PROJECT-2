@@ -4,7 +4,12 @@ from .models import Program, Enrollment
 class ProgramForm(forms.ModelForm):
     class Meta:
         model = Program
-        fields = ['sport', 'title', 'description', 'min_age', 'max_age', 'gender', 'start_date', 'duration_weeks', 'coach', 'image']
+        fields = ['sport', 'image'] 
+
+class SubProgramForm(forms.ModelForm):
+    class Meta:
+        model = Program
+        exclude = ['sport', 'parent'] 
 
 
 class EnrollmentForm(forms.ModelForm):

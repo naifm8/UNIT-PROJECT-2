@@ -1,0 +1,26 @@
+{% extends 'base.html' %} {% block title %}Sub Programs{% endblock %} 
+{% block content %} 
+{% if user.is_authenticated and user.role in 'admin coach' %}
+<a
+  href="{% url 'academy:subprogram_create' main_program.id %}"
+  class="btn btn-primary mb-3"
+>
+  + Add Sub-Program
+</a>
+{% endif %}
+
+<div class="container py-5">
+  <h2 class="mb-4">Sub-Programs under "{{ main_program.title }}"</h2>
+
+  {% for program in subprograms %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5>{{ program.title }}</h5>
+      <p>{{ program.description|truncatewords:20 }}</p>
+    </div>
+  </div>
+  {% empty %}
+  <p>No sub-programs found.</p>
+  {% endfor %}
+</div>
+{% endblock %}

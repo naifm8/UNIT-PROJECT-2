@@ -14,9 +14,9 @@ class Program(models.Model):
         ('male', 'Boys Only'),
         ('female', 'Girls Only'),
     ]
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='subprograms')
     sport = models.CharField(max_length=30, choices=SPORT_CHOICES)
     title = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='programs/', null=True, blank=True)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='any')
     description = models.TextField()
     min_age = models.PositiveIntegerField(default=6)
@@ -29,6 +29,7 @@ class Program(models.Model):
         null=True,
         limit_choices_to={'role': 'coach'}
     )
+    image = models.ImageField(upload_to='programs/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.title} ({self.get_sport_display()})"

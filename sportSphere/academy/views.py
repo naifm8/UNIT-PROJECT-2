@@ -5,7 +5,7 @@ from .forms import EnrollmentForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import user_passes_test #!!!!!!!!!
-from .forms import ProgramForm
+from .forms import ProgramForm, SubProgramForm
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -71,25 +71,24 @@ def enroll_player_view(request, program_id):
 User = get_user_model()
 @user_passes_test(lambda u: u.is_authenticated and u.role in ['coach', 'admin'])
 def program_create_view(request):
-    if request.user.role == 'coach':
-        if request.method == 'POST':
-            form = ProgramForm(request.POST)
-            if form.is_valid():
-                program = form.save(commit=False)
-                program.coach = request.user  # auto-assign coach
-                program.save()
-                return redirect('academy:program_list')
-        else:
-            form = ProgramForm()
-            form.fields.pop('coach')  # hide coach field for coaches
-    else:
-        # Admin: can select coach manually
-        form = ProgramForm(request.POST or None)
-        if request.method == 'POST' and form.is_valid():
-            form.save()
+    if request.method == 'POST':
+        form = ProgramForm(request.POST, request.FILES)
+        if form.is_valid():
+            program = form.save(commit=False)
+            # Admin can assign coach, Coach assigns self
+            if request.user.role == 'coach':
+                program.coach = request.user
+            program.save()
             return redirect('academy:program_list')
+    else:
+        form = ProgramForm()
+
+        # Hide coach field for coach role
+        if request.user.role == 'coach' and 'coach' in form.fields:
+            form.fields.pop('coach')
 
     return render(request, 'academy/program_form.html', {'form': form})
+
 
 @login_required
 def program_detail_view(request, pk):
@@ -136,6 +135,41 @@ def program_list_view(request):
         'query': query,
     }
     return render(request, 'academy/program_list.html', context)
+
+def subprogram_list_view(request, program_id):
+    main_program = get_object_or_404(Program, id=program_id)
+    subprograms = main_program.subprograms.all()  # from related_name
+    return render(request, 'academy/subprogram_list.html', {
+        'main_program': main_program,
+        'subprograms': subprograms
+    })
+
+def is_admin_or_coach(user):
+    return user.is_authenticated and user.role in ['admin', 'coach']
+
+@login_required
+@user_passes_test(is_admin_or_coach)
+def subprogram_create_view(request, parent_id):
+    parent_program = get_object_or_404(Program, id=parent_id)
+
+    if request.method == 'POST':
+        form = SubProgramForm(request.POST, request.FILES)
+        if form.is_valid():
+            subprogram = form.save(commit=False)
+            subprogram.parent = parent_program
+            subprogram.sport = parent_program.sport
+            subprogram.coach = request.user
+            subprogram.save()
+            return redirect('academy:subprogram_list', program_id=parent_program.id)
+    else:
+        form = SubProgramForm()
+
+    return render(request, 'academy/subprogram_form.html', {
+        'form': form,
+        'parent_program': parent_program
+    })
+
+
 
 
 
