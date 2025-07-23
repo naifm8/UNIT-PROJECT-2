@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}My Players{% endblock %}
+{% block content %}
+<h2 class="mb-4">
+  {% if user.role == 'parent' %}My Children{% else %}Players{% endif %}
+</h2>
+
+{% if user.role == 'parent' %}
+  <a href="{% url 'accounts:player_add' %}" class="btn btn-dark mb-3">Add Player</a>
+{% endif %}
+
+<table class="table align-middle">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Birth Date</th>
+      <th>Age</th>
+      <th>Parent</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for player in players %}
+  <tr>
+    <td>
+      {% if player.profile_photo %}
+        <img src="{{ player.profile_photo.url }}" alt="" width="40" height="40" class="rounded-circle me-2">
+      {% endif %}
+      {{ player.full_name }}
+    </td>
+    <td>{{ player.birth_date }}</td>
+    <td>{{ player.age }}</td>
+    <td>{{ player.parent.username }}</td>
+    <td>
+      {% for enrollment in player.enrollment_set.all %}
+        <div class="mb-1">
+          <strong>{{ enrollment.program.title }}</strong> <br>
+          <span class="badge bg-{% if enrollment.status == 'approved' %}success{% else %}secondary{% endif %}">
+            {{ enrollment.get_status_display }}
+          </span>
+        </div>
+      {% empty %}
+        <span class="text-muted">No enrollments</span>
+      {% endfor %}
+    </td>
+    <td class="text-end">
+      {% if user.role == 'parent' and player.parent == user or user.role == 'admin' %}
+        <a href="{% url 'accounts:player_detail' player.pk %}" class="btn btn-sm btn-outline-primary me-1">View</a>
+        <a href="{% url 'accounts:player_edit' player.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+        <a href="{% url 'accounts:player_delete' player.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+      {% endif %}
+    </td>
+  </tr>
+{% endfor %}
+
+  </tbody>
+</table>
+{% endblock %}

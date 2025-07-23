@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Programs{% endblock %}
+{% block content %}
+<h2 class="mb-4">Available Programs</h2>
+
+<form method="get" class="row g-3 mb-4">
+  <div class="col-md-4">
+    <select name="sport" class="form-select">
+      <option value="">All Sports</option>
+      {% for code, label in sports %}
+        <option value="{{ code }}" {% if selected_sport == code %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-4">
+    <select name="age" class="form-select">
+      <option value="">All Ages</option>
+      {% for age in age_options %}
+        <option value="{{ age }}" {% if selected_age == age|stringformat:"s" %}selected{% endif %}>Age {{ age }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-4">
+    <button type="submit" class="btn btn-dark w-100">Filter</button>
+  </div>
+</form>
+
+
+<div class="row">
+  {% for program in programs %}
+    <div class="col-md-6">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5>{{ program.title }}</h5>
+          <p>{{ program.description|truncatewords:25 }}</p>
+          <p><strong>Sport:</strong> {{ program.get_sport_display }}</p>
+          <p><strong>Coach:</strong> {{ program.coach }}</p>
+          <p><strong>Age Group:</strong> {{ program.min_age }} - {{ program.max_age }}</p>
+          <a href="{% url 'academy:program_detail' program.pk %}" class="btn btn-outline-primary btn-sm">View Details</a>
+          <a href="{% url 'academy:enroll_player' program.id %}" class="btn btn-dark">Enroll</a>
+        </div>
+      </div>
+    </div>
+    {% if user.role == 'admin' or program.coach == user %}
+  <div class="mt-2">
+    <a href="{% url 'academy:program_edit' program.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+    <a href="{% url 'academy:program_delete' program.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+  </div>
+{% endif %}
+  {% empty %}
+    <p>No programs found.</p>
+  {% endfor %}
+</div>
+{% endblock %}

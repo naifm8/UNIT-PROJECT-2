@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Enroll Player{% endblock %}
+{% block content %}
+<h2 class="mb-4">Enroll a Player in <em>{{ program.title }}</em></h2>
+
+<form method="post">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="player_id" class="form-label">Select Player</label>
+    <select name="player_id" class="form-select" required>
+      <option value="">Choose one...</option>
+      {% for player in players %}
+        <option value="{{ player.id }}">{{ player.full_name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="btn btn-dark">Enroll</button>
+  <a href="{% url 'academy:program_list' %}" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+{% endblock %}
