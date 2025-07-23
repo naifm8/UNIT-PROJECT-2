@@ -4,7 +4,7 @@ from .models import Program, Enrollment
 class ProgramForm(forms.ModelForm):
     class Meta:
         model = Program
-        fields = ['sport', 'title', 'description', 'min_age', 'max_age', 'start_date', 'duration_weeks', 'coach']
+        fields = ['sport', 'title', 'description', 'min_age', 'max_age', 'gender', 'start_date', 'duration_weeks', 'coach', 'image']
 
 
 class EnrollmentForm(forms.ModelForm):

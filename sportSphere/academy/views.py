@@ -7,6 +7,8 @@ from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import user_passes_test #!!!!!!!!!
 from .forms import ProgramForm
 from django.contrib.auth import get_user_model
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 @login_required
 def program_list_view(request):
@@ -93,9 +95,48 @@ def program_create_view(request):
 def program_detail_view(request, pk):
     program = get_object_or_404(Program, pk=pk)
 
+    # Count all enrollments (or only approved if preferred)
+    total_players = program.enrollment_set.filter(status='approved').count()
+
     return render(request, 'academy/program_detail.html', {
-        'program': program
+        'program': program,
+        'total_players': total_players,
     })
+
+
+@login_required
+def program_list_view(request):
+    sport_filter = request.GET.get('sport')
+    age_filter = request.GET.get('age')
+    query = request.GET.get('q')
+
+    programs = Program.objects.all()
+
+    if sport_filter:
+        programs = programs.filter(sport=sport_filter)
+
+    if age_filter and age_filter.isdigit():
+        age = int(age_filter)
+        programs = programs.filter(min_age__lte=age, max_age__gte=age)
+
+    if query:
+        programs = programs.filter(Q(title__icontains=query) | Q(description__icontains=query))
+
+    paginator = Paginator(programs, 3)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'programs': page_obj,
+        'page_obj': page_obj,
+        'selected_sport': sport_filter,
+        'selected_age': age_filter,
+        'sports': Program.SPORT_CHOICES,
+        'age_options': [6, 8, 10, 12, 14, 16],
+        'query': query,
+    }
+    return render(request, 'academy/program_list.html', context)
+
 
 
 @login_required

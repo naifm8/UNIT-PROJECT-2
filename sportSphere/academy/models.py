@@ -9,8 +9,15 @@ class Program(models.Model):
         ('tennis', 'Tennis'),
         ('gymnastics', 'Gymnastics'),
     ]
+    GENDER_CHOICES = [
+        ('any', 'Any'),
+        ('male', 'Boys Only'),
+        ('female', 'Girls Only'),
+    ]
     sport = models.CharField(max_length=30, choices=SPORT_CHOICES)
     title = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='programs/', null=True, blank=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='any')
     description = models.TextField()
     min_age = models.PositiveIntegerField(default=6)
     max_age = models.PositiveIntegerField(default=16)

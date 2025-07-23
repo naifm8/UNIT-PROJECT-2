@@ -1,9 +1,14 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Programs{% endblock %}
 {% block content %}
 <h2 class="mb-4">Available Programs</h2>
 
 <form method="get" class="row g-3 mb-4">
+  <div class="col-md-4">
+    <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search programs...">
+  </div>
+  
   <div class="col-md-4">
     <select name="sport" class="form-select">
       <option value="">All Sports</option>
@@ -29,28 +34,47 @@
 
 
 <div class="row">
-  {% for program in programs %}
-    <div class="col-md-6">
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5>{{ program.title }}</h5>
-          <p>{{ program.description|truncatewords:25 }}</p>
-          <p><strong>Sport:</strong> {{ program.get_sport_display }}</p>
-          <p><strong>Coach:</strong> {{ program.coach }}</p>
-          <p><strong>Age Group:</strong> {{ program.min_age }} - {{ program.max_age }}</p>
-          <a href="{% url 'academy:program_detail' program.pk %}" class="btn btn-outline-primary btn-sm">View Details</a>
-          <a href="{% url 'academy:enroll_player' program.id %}" class="btn btn-dark">Enroll</a>
-        </div>
+<div class="container py-5">
+  <h2 class="fw-bold mb-4">Programs</h2>
+
+  <div class="row g-4">
+    {% for program in programs %}
+      <div class="col-12">
+        <a href="{% url 'academy:program_detail' program.id %}" class="program-card d-block text-white text-decoration-none" style="background-image: url('{% if program.image %}{{ program.image.url }}{% else %}{% static 'images/default_program.png' %}{% endif %}');">
+          <div class="overlay d-flex align-items-center justify-content-between px-4">
+            <h3 class="m-0 text-uppercase fw-bold">{{ program.title }}</h3>
+            <span class="arrow-icon">&rarr;</span>
+          </div>
+        </a>
       </div>
-    </div>
+  </div>
+</div>
+
     {% if user.role == 'admin' or program.coach == user %}
   <div class="mt-2">
     <a href="{% url 'academy:program_edit' program.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
     <a href="{% url 'academy:program_delete' program.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
   </div>
-{% endif %}
-  {% empty %}
-    <p>No programs found.</p>
+    {% endif %}
+    {% empty %}
+      <p>No programs found.</p>
   {% endfor %}
 </div>
+<nav class="mt-4">
+  <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}{% if selected_sport %}sport={{ selected_sport }}&{% endif %}{% if selected_age %}age={{ selected_age }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+      </li>
+    {% endif %}
+    <li class="page-item disabled">
+      <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    </li>
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}{% if selected_sport %}sport={{ selected_sport }}&{% endif %}{% if selected_age %}age={{ selected_age }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
 {% endblock %}

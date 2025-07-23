@@ -1,0 +1,131 @@
+/* ==== register page ==== */
+.auth-container {
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    min-height: 500px;
+  }
+  .auth-left {
+    background: #004d5a;
+    color: white;
+    flex: 1;
+    min-width: 250px;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+  }
+  .auth-right {
+    background: white;
+    flex: 1.5;
+    min-width: 300px;
+    padding: 40px 30px;
+  }
+  .social-btn {
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 6px;
+    font-size: 18px;
+    color: #004d5a;
+    background: transparent;
+    transition: 0.3s ease;
+  }
+  .social-btn:hover {
+    background: #004d5a;
+    color: white;
+  }
+
+  /* ==== LOGIN PAGE ==== */
+.login-card {
+    display: flex;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    background: #fff;
+  }
+  
+  .login-card .left {
+    background: #014b53;
+    color: #fff;
+    padding: 40px 30px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .login-card .left h2 {
+    font-weight: bold;
+  }
+  
+  .login-card .left button {
+    background: transparent;
+    border: 1px solid #fff;
+    padding: 10px 20px;
+    color: #fff;
+    margin-top: 20px;
+    font-weight: 500;
+    border-radius: 4px;
+  }
+  
+  .login-card .right {
+    flex: 1;
+    padding: 40px 30px;
+  }
+  
+  .login-card .form-control {
+    border-radius: 0;
+    margin-bottom: 15px;
+    background: #eee;
+  }
+  
+  .login-card .btn-login {
+    background-color: #014b53;
+    color: #fff;
+    font-weight: bold;
+    width: 100%;
+    border: none;
+  }
+  
+  @media (max-width: 768px) {
+    .login-card {
+      flex-direction: column;
+    }
+  }
+  
+/* ==== Program list page ==== */
+.program-card {
+  position: relative;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 25px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.program-card:hover {
+  transform: scale(1.02);
+}
+
+.program-card .overlay {
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  font-size: 1.5rem;
+}
+
+.program-card .arrow-icon {
+  font-size: 2rem;
+  color: white;
+}

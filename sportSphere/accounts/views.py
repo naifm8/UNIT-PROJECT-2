@@ -6,6 +6,8 @@ from .forms import UserRegistrationForm, PlayerForm
 from .models import Player, User
 from academy.models import Enrollment
 from academy.models import Program, Enrollment
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 def register_view(request):
     if request.method == 'POST':
@@ -14,7 +16,7 @@ def register_view(request):
             user = form.save()
             login(request, user)
             if user.role == 'parent':
-                return redirect('accounts:player_add')
+                return redirect('academy:program_list')
             return redirect('academy:program_list')
     else:
         form = UserRegistrationForm()
@@ -38,18 +40,30 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('accounts:login')
 
 @login_required
 def player_list_view(request):
-    # Parents see only their own players; admins see all; coaches read-only (here: all)
     if request.user.role == 'parent':
         players = Player.objects.filter(parent=request.user)
     else:
         players = Player.objects.all()
 
-    players = players.prefetch_related('enrollment_set__program')    
-    return render(request, 'accounts/player_list.html', {'players': players})
+    query = request.GET.get('q')
+    if query:
+        players = players.filter(full_name__icontains=query)
+
+    players = players.prefetch_related('enrollment_set__program')
+    paginator = Paginator(players, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'accounts/player_list.html', {
+        'players': page_obj,
+        'query': query,
+        'page_obj': page_obj,
+    })
+
 
 @login_required
 def player_add_view(request):

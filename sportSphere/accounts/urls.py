@@ -1,4 +1,7 @@
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+
 from .views import (
     register_view, login_view, logout_view,
     player_list_view, player_add_view, player_update_view, player_delete_view,player_detail_view,dashboard_view
@@ -20,3 +23,5 @@ urlpatterns = [
     path('players/<int:pk>/detail/', player_detail_view, name='player_detail'),
 
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
