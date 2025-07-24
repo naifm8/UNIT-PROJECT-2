@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Welcome to SportSphere{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero-section py-5" style="background-color: #ffffff; color: white;">
+  <div class="container">
+    <div class="row align-items-center">
+
+      <!-- Left -->
+      <div class="col-md-7">
+        <h1 class="display-5 fw-bold">Welcome to SportSphere</h1>
+        <p class="lead mt-3">
+          Discover and enroll in top-quality sports programs for your kids. Whether it's Football, Basketball, or Swimming – SportSphere connects families with coaches and youth academies across various sports in one platform.
+        </p>
+        <a href="{% url 'academy:program_list' %}" class="btn btn-danger btn-lg mt-3">Explore Programs</a>
+      </div>
+
+      <!-- Right -->
+      <div class="col-md-5 text-center">
+        <img src="{% static 'images/sport_hero.jpg' %}" alt="SportSphere Hero" class="img-fluid" style="max-height: 300px;">
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAM CARDS -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="fw-bold text-center mb-4">Popular Programs</h2>
+
+    <div class="row g-4">
+      <!-- Football -->
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+          <img src="{% static 'images/football_card.jpg' %}" class="card-img-top" alt="Football">
+          <div class="card-body">
+            <h5 class="card-title">Football</h5>
+            <p class="card-text">From dribbling to goal-scoring, our football programs build skills, teamwork, and confidence for all age groups.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Basketball -->
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+          <img src="{% static 'images/basketball_card.jpg' %}" class="card-img-top" alt="Basketball">
+          <div class="card-body">
+            <h5 class="card-title">Basketball</h5>
+            <p class="card-text">Train like a pro in our youth basketball academies – focusing on agility, precision, and teamwork fundamentals.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Swimming -->
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+          <img src="{% static 'images/swimming_card.jpg' %}" class="card-img-top" alt="Swimming">
+          <div class="card-body">
+            <h5 class="card-title">Swimming</h5>
+            <p class="card-text">Our swimming programs focus on technique, safety, and building strength across all swim levels and ages.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

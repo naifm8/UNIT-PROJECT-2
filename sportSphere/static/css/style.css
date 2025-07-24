@@ -1,3 +1,16 @@
+
+/* ==== home page ==== */
+.col-md-7 h1, p {
+  color: #070707;
+}
+.card-img-top {
+  height: 220px;
+  object-fit: cover;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+
 /* ==== register page ==== */
 .auth-container {
     display: flex;
@@ -112,20 +125,23 @@
   border-radius: 25px;
   overflow: hidden;
   transition: transform 0.3s ease;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.075);
+}
+.program-card h3{
+  color: #070707;
+
 }
 
 .program-card:hover {
-  transform: scale(1.02);
+  transform: scale(1.05);
 }
 
 .program-card .overlay {
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
   font-size: 1.5rem;
 }
 
 .program-card .arrow-icon {
   font-size: 2rem;
-  color: white;
+  color: rgb(0, 0, 0);
 }

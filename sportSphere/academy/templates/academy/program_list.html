@@ -42,7 +42,7 @@
       <div class="col-12">
         <a href="{% url 'academy:subprogram_list' program.id %}" class="program-card d-block text-white text-decoration-none" style="background-image: url('{% if program.image %}{{ program.image.url }}{% else %}{% static 'images/default_program.png' %}{% endif %}');">
           <div class="overlay d-flex align-items-center justify-content-between px-4">
-            <h3 class="m-0 text-uppercase fw-bold">{{ program.title }}</h3>
+            <h3 class="m-0 text-uppercase fw-bold">{{ program.sport }}</h3>
             <span class="arrow-icon">&rarr;</span>
           </div>
         </a>

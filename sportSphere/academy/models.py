@@ -21,8 +21,8 @@ class Program(models.Model):
     description = models.TextField()
     min_age = models.PositiveIntegerField(default=6)
     max_age = models.PositiveIntegerField(default=16)
-    start_date = models.DateField()
-    duration_weeks = models.PositiveIntegerField()
+    start_date = models.DateField(null=True, blank=True)
+    duration_weeks = models.PositiveIntegerField(null=True, blank=True)
     coach = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,

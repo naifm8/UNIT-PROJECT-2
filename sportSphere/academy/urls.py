@@ -6,7 +6,7 @@ from .views import program_list_view, enroll_player_view,pending_enrollments_vie
 app_name = 'academy'
 
 urlpatterns = [
-    path('', program_list_view, name='program_list'),
+    path('program/', program_list_view, name='program_list'),
     path('enroll/<int:program_id>/', enroll_player_view, name='enroll_player'),
     path('enrollments/pending/', pending_enrollments_view, name='pending_enrollments'),
     path('enrollments/<int:enrollment_id>/approve/', approve_enrollment_view, name='approve_enrollment'),

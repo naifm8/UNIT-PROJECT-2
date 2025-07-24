@@ -124,8 +124,6 @@ def player_detail_view(request, pk):
     return render(request, 'accounts/player_detail.html', context)
 
 
-
-
 @login_required
 def dashboard_view(request):
     user = request.user
