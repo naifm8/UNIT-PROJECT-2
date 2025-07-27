@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ subprogram.title }} - Details{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row align-items-center">
+    <div class="col-md-6">
+      {% if subprogram.image %}
+        <img src="{{ subprogram.image.url }}" alt="{{ subprogram.title }}" class="img-fluid rounded shadow">
+      {% else %}
+        <img src="{% static 'images/default-subprogram.webp' %}" alt="Default Image" class="img-fluid rounded shadow">
+      {% endif %}
+    </div>
+    <div class="col-md-6">
+      <h2>{{ subprogram.title }}</h2>
+      <p><strong>Age Range:</strong> {{ subprogram.min_age }} - {{ subprogram.max_age }}</p>
+      <p><strong>Gender:</strong> {{ subprogram.get_gender_display }}</p>
+      <p><strong>Start Date:</strong> {{ subprogram.start_date }}</p>
+      <p><strong>Duration:</strong> {{ subprogram.duration_weeks }} weeks</p>
+      <p><strong>Coach:</strong> {{ subprogram.coach.first_name }} {{ subprogram.coach.first_name }}</p>
+      <p><strong>experience:</strong> ({{ subprogram.coach.experience_years }} yrs)</p>
+      <p><strong>Description:</strong>{{ subprogram.description }}</p>
+
+      {% if user.is_authenticated and user.role == 'parent' %}
+        <a href="{% url 'academy:enroll_child' subprogram.id %}" class="btn btn-success">Enroll</a>
+      {% endif %}
+      <a href="{% url 'academy:subprogram_list' subprogram.program.sport_type %}" class="btn btn-secondary ms-2">← Back</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

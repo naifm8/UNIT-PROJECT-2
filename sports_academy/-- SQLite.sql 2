@@ -1,0 +1,21 @@
+-- SQLite
+INSERT INTO academy_subprogram (id, title, gender, min_age, max_age, start_date, description, duration_weeks, image, program_id, coach_id)
+VALUES 
+
+(6, 'Junior Football Stars', 'boys', 6, 9, '2025-08-10', 'A fun and energetic football program designed to introduce young boys to the fundamentals of the game while building teamwork and confidence.', 6, '', 1, NULL),
+(7, 'Elite Girls Football Training', 'girls', 10, 13, '2025-08-15', 'An advanced program for girls passionate about football, focusing on skill development, strategy, and leadership through team-based training.', 8, '', 1, NULL),
+(8, 'All-Star Football Camp', 'any', 8, 12, '2025-08-20', 'Join our inclusive football camp where boys and girls train together to learn the basics of passing, dribbling, and scoring through engaging drills and games.', 5, '', 1, NULL),
+(9, 'Pro Football Bootcamp', 'boys', 14, 17, '2025-08-25', 'A high-intensity bootcamp for teen boys looking to level up their football skills and tactical awareness in a competitive environment.', 7, '', 1, NULL),
+(10, 'Future Champions Program', 'any', 12, 15, '2025-08-30', 'Tailored for future football champions, this program sharpens skills and builds discipline through structured training sessions and mini matches.', 6, '', 1, NULL),
+
+(11, 'Mini Dunkers Academy', 'boys', 6, 9, '2025-08-12', 'An exciting beginner’s basketball program for young boys focusing on dribbling, shooting, and teamwork in a playful setting.', 4, '', 2, NULL),
+(12, 'Girls Got Game', 'girls', 10, 14, '2025-08-18', 'This empowering program helps girls develop basketball skills while boosting their confidence and sportsmanship on and off the court.', 6, '', 2, NULL),
+(13, 'Co-Ed Hoop Skills', 'any', 9, 13, '2025-08-22', 'A dynamic co-ed basketball program where kids improve their fundamentals through team drills, scrimmages, and fun competitions.', 5, '', 2, NULL),
+(14, 'Teen Basketball League', 'boys', 13, 17, '2025-08-27', 'Join a league-style training program that focuses on competitive play, physical fitness, and sports ethics for teenage boys.', 8, '', 2, NULL),
+(15, 'Next Gen Ballers', 'any', 11, 16, '2025-09-01', 'For aspiring athletes who want to advance their basketball techniques and court intelligence in a motivational environment.', 7, '', 2, NULL),
+
+(16, 'Tiny Tennis Tots', 'girls', 6, 8, '2025-08-11', 'A beginner tennis program designed for young girls to learn the basics of the game through fun drills, hand-eye coordination, and gentle competition.', 5, '', 7, NULL),
+(17, 'Junior Tennis League', 'boys', 9, 12, '2025-08-16', 'An engaging and competitive tennis league for boys focusing on stroke development, match play, and tournament preparation.', 6, '', 7, NULL),
+(18, 'Mixed Doubles Academy', 'any', 10, 13, '2025-08-21', 'Kids of all genders train together in this program to master doubles play, court movement, and teamwork with a fun twist.', 4, '', 7, NULL),
+(19, 'Teen Tennis Pros', 'any', 13, 17, '2025-08-26', 'A serious training ground for teens looking to refine their technique, mental strength, and match performance in a structured setting.', 8, '', 7, NULL),
+(20, 'Smash & Serve Camp', 'boys', 11, 15, '2025-08-31', 'A power-packed tennis camp where boys focus on improving their serve, backhand, and match endurance with personalized coaching.', 7, '', 7, NULL);

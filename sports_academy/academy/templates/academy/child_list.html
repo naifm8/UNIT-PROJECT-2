@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}My Children{% endblock %}
 {% block content %}
   <div class="container py-4">
@@ -7,7 +8,11 @@
       {% for child in children %}
       <div class="col-md-4 mb-4">
         <div class="card h-100">
-          <img src="{{ child.image.url }}" class="card-img-top" alt="{{ child.name }}">
+          {% if child.image %}
+            <img src="{{ child.image.url }}" class="card-img-top" alt="{{ child.name }}">
+          {% else %}
+            <img src="{% static 'images/default-avatar.jpg' %}" class="card-img-top" alt="Default Avatar">
+          {% endif %}          
           <div class="card-body">
             <h5 class="card-title">{{ child.name }}</h5>
             <p><strong>Age:</strong> {{ child.age }}</p>

@@ -66,6 +66,12 @@ def subprogram_create_view(request, sport_slug):
         'parent_program': parent_program
     })
 
+@login_required
+def subprogram_detail_view(request, subprogram_id):
+    subprogram = get_object_or_404(SubProgram, id=subprogram_id)
+    return render(request, 'academy/subprogram_detail.html', {
+        'subprogram': subprogram
+    })
 
 
 @login_required

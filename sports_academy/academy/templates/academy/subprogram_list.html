@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% with show_create_subprogram=show_create_subprogram sport_slug=sport_slug %}
 {% block title %}{{ parent_program.get_sport_type_display }} Programs{% endblock %}
 {% block content %}
@@ -10,28 +11,30 @@
     <div class="row">
       {% for sub in subprograms %}
         <div class="col-md-4 mb-4">
-          <div class="card h-100">
-            <img src="{{ sub.image.url }}" class="card-img-top" alt="{{ sub.title }}">
-            <div class="card-body">
-              <h5>{{ sub.title }}</h5>
-              <p><strong>Age:</strong> {{ sub.min_age }} - {{ sub.max_age }}</p>
-              <p><strong>Gender:</strong> {{ sub.get_gender_display }}</p>
+          <a href="{% url 'academy:subprogram_detail' sub.id %}" class="text-decoration-none text-dark">
+            <div class="card h-100">
+              {% if sub.image %}
+                <img src="{{ sub.image.url }}" class="card-img-top" alt="{{ sub.title }}">
+              {% else %}
+                <img src="{% static 'images/default-subprogram.webp' %}" class="card-img-top" alt="Default Image">
+              {% endif %}
+              <div class="card-body">
+                <h5>{{ sub.title }}</h5>
+                <p><strong>Age:</strong> {{ sub.min_age }} - {{ sub.max_age }}</p>
+                <p><strong>Gender:</strong> {{ sub.get_gender_display }}</p>
             
-              {% if sub.coach %}
-                <p><strong>Coach:</strong> {{ sub.coach.username }} ({{ sub.coach.experience_years }} yrs)</p>
-              {% endif %}
-              {% if user.is_authenticated and user.role == 'parent' %}
-                <a href="{% url 'academy:enroll_child' sub.id %}" class="btn btn-success w-100 mt-2">Enroll</a>
-              {% endif %}
-                
+                {% if sub.coach %}
+                  <p><strong>Coach:</strong> {{ sub.coach.username }} ({{ sub.coach.experience_years }} yrs)</p>
+                {% endif %}
               
               {% if user.is_authenticated and user.role in 'admin coach' %}
                 <a href="{% url 'academy:subprogram_edit' sub.id %}" class="btn btn-outline-primary btn-sm">Edit</a>
                 <a href="{% url 'academy:subprogram_delete' sub.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
               {% endif %}
-            </div>
+              </div>
             
-          </div>
+            </div>
+          </a>
         </div>
       {% empty %}
         <p class="text-center">No subprograms available for this sport yet.</p>
