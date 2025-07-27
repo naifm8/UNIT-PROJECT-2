@@ -33,7 +33,7 @@
             <a href="{% url 'academy:child_create' %}">+ Add Child</a>
           {% endif %}
       
-          <span>Welcome, {{ user.username }}</span>
+          <span>Welcome, {{ user.first_name }}</span>
           <a href="{% url 'accounts:logout' %}">Logout</a>
       
         {% else %}
@@ -45,12 +45,21 @@
     </div>
   </header>
 
+  <script>
+    setTimeout(() => {
+      const messages = document.getElementById('floating-messages');
+      if (messages) messages.style.display = 'none';
+    }, 3500);
+  </script>
+  
   <!-- Page Content -->
   <main class="main-content">
     {% if messages %}
-      <div id="message-container" class="container py-2">
+      <div id="floating-messages">
         {% for message in messages %}
-          <div class="alert">{{ message }}</div>
+          <div class="toast-message {{ message.tags }}">
+          {{ message }}
+          </div>
         {% endfor %}
       </div>
     {% endif %}
@@ -62,20 +71,7 @@
   <footer class="footer text-center py-3">
     <p>&copy; 2025 SportSphere. All rights reserved.</p>
   </footer>
-
-  <script>
-    setTimeout(() => {
-      const messageContainer = document.getElementById('message-container');
-      if (messageContainer) {
-        messageContainer.style.transition = 'opacity 0.5s ease';
-        messageContainer.style.opacity = '0';
   
-        setTimeout(() => {
-          messageContainer.remove();
-        }, 500); 
-      }
-    }, 3000); 
-  </script>
   
 </body>
 </html>

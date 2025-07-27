@@ -239,14 +239,23 @@ def child_update_view(request, child_id):
 
 @login_required
 def child_delete_view(request, child_id):
-    child = get_object_or_404(Child, id=child_id, parent=request.user)
+    child = get_object_or_404(Child, id=child_id)
 
-    if request.method == 'POST':
-        child.delete()
-        messages.success(request, "Child deleted successfully!")
-        return redirect('academy:child_list')
+    if request.user == child.parent or request.user.role == 'admin':
+        if request.method == 'POST':
+            child.delete()
+            messages.success(request, "Child deleted successfully!")
 
-    return render(request, 'academy/child_confirm_delete.html', {'child': child})
+            if request.user.role == 'admin':
+                return redirect('accounts:user_list')
+            else:
+                return redirect('academy:child_list')
+
+        return render(request, 'academy/child_confirm_delete.html', {'child': child})
+
+    messages.error(request, "You do not have permission to delete this child.")
+    return redirect('academy:home')
+
 
 def is_coach(user):
     return user.is_authenticated and user.role == 'coach'
@@ -289,6 +298,3 @@ def coach_dashboard_view(request):
         'age_options': ['6-8', '8-10', '10-12', '12-14', '14-16'],
     }
     return render(request, 'academy/coach_dashboard.html', context)
-
-
-

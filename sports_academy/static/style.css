@@ -12,16 +12,32 @@ body {
   padding: 0 15px;
 }
 
-.alert {
-  background: #d1e7dd;
-  border-left: 4px solid #0f5132;
-  padding: 10px 15px;
-  margin-bottom: 10px;
-  color: #0f5132;
-  border-radius: 5px;
-  font-size: 0.95rem;
-  transition: opacity 0.5s ease;
+#floating-messages {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
 }
+
+.toast-message {
+  background-color: #28a745;
+  color: white;
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 5.0s ease-in-out;
+}
+
+.toast-message.error {
+  background-color: #dc3545;
+}
+
+@keyframes fadeIn {
+  from { opacity: 1; transform: translateY(-10px); }
+  to { opacity: 0; transform: translateY(0); }
+}
+
 
 
 /* === Navbar === */

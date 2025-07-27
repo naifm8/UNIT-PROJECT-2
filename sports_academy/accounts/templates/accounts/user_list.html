@@ -6,18 +6,19 @@
     <ul>
       {% for coach in coaches %}
         <li>
-          {{ coach.username }} - {{ coach.email }}<br>
-          Sport: {{ coach.sport}} | Experience: {{ coach.experience_years }} years | Age: {{ coach.age }}
+          <strong>{{ coach.first_name }} {{ coach.last_name }}</strong> - {{ coach.email }}<br>
+          Sport: {{ coach.sport}} | Experience: {{ coach.experience_years }} years
           <a href="{% url 'accounts:delete_user' coach.id %}" class="btn btn-sm btn-danger">Delete</a>
         </li>
      {% endfor %}
     </ul>
 
+    <hr>
     <h2>Parents</h2>
     <ul>
       {% for parent in parents %}
         <li>
-          <strong>{{ parent.username }}</strong> - {{ parent.email }}
+          <strong>{{ parent.first_name }} {{ parent.last_name }}</strong> - {{ parent.email }}
           <a href="{% url 'accounts:delete_user' parent.id %}" class="btn btn-sm btn-danger">Delete</a>
     
           {% with children=parent.child_set.all %}
@@ -26,7 +27,7 @@
                 {% for child in children %}
                   <li>
                     <strong>{{ child.name }}</strong> ({{ child.age }} yrs, {{ child.get_gender_display }})
-                    
+                    <a href="{% url 'academy:child_delete' child.id %}" class="btn btn-sm btn-danger">Delete</a>
                     {% if child.enrollments.exists %}
                       <ul>
                         {% for enrollment in child.enrollments.all %}
@@ -47,7 +48,6 @@
             {% endif %}
           {% endwith %}
         </li>
-        <hr>
       {% endfor %}
     </ul>
   </div>

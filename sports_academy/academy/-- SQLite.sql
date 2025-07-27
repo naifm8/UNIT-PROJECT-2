@@ -1,0 +1,3 @@
+-- SQLite
+SELECT id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined, role, age, experience_years, sport
+FROM accounts_user;
