@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Manage Users{% endblock %}
+{% block content %}
+  <div class="container py-4">
+    <h2>Coaches</h2>
+    <ul>
+      {% for coach in coaches %}
+        <li>
+          {{ coach.username }} - {{ coach.email }}<br>
+          Sport: {{ coach.sport}} | Experience: {{ coach.experience_years }} years | Age: {{ coach.age }}
+          <a href="{% url 'accounts:delete_user' coach.id %}" class="btn btn-sm btn-danger">Delete</a>
+        </li>
+     {% endfor %}
+    </ul>
+
+    <h2>Parents</h2>
+    <ul>
+      {% for parent in parents %}
+        <li>
+          <strong>{{ parent.username }}</strong> - {{ parent.email }}
+          <a href="{% url 'accounts:delete_user' parent.id %}" class="btn btn-sm btn-danger">Delete</a>
+    
+          {% with children=parent.child_set.all %}
+            {% if children %}
+              <ul class="mt-2">
+                {% for child in children %}
+                  <li>
+                    <strong>{{ child.name }}</strong> ({{ child.age }} yrs, {{ child.get_gender_display }})
+                    
+                    {% if child.enrollments.exists %}
+                      <ul>
+                        {% for enrollment in child.enrollments.all %}
+                          <li>
+                            Enrolled in <strong>{{ enrollment.subprogram.title }}</strong>
+                            on {{ enrollment.date_enrolled|date:"Y-m-d" }}
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    {% else %}
+                      <p>No enrollments yet.</p>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p>No children added.</p>
+            {% endif %}
+          {% endwith %}
+        </li>
+        <hr>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %} {% block title %}Welcome to SportSphere{% endblock %}
+{% block content %}
+<div class="hero text-center py-5">
+  <h1>Welcome to SportSphere</h1>
+  <p>Explore sports programs for kids and teens!</p>
+</div>
+
+<div class="container py-4">
+  <div class="row">
+    {% for program in programs %}
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <img
+          src="{{ program.image.url }}"
+          class="card-img-top"
+          alt="{{ program.get_sport_type_display }}"
+        />
+        <div class="card-body text-center">
+          <h5>{{ program.get_sport_type_display }}</h5>
+          <a
+            href="{% url 'academy:subprogram_list' program.sport_type %}"
+            class="btn btn-outline-dark btn-sm"
+            >View SubPrograms</a
+          >
+        </div>
+        {% if user.is_authenticated and user.role in 'admin coach' %}
+        <a
+          href="{% url 'academy:program_edit' program.id %}"
+          class="btn btn-sm btn-outline-primary mt-2"
+          >Edit</a
+        >
+        <a
+          href="{% url 'academy:program_delete' program.id %}"
+          class="btn btn-sm btn-outline-danger mt-2"
+          >Delete</a
+        >
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

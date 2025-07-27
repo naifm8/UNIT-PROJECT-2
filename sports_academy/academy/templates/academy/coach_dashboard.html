@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Coach Dashboard{% endblock %}
+
+{% block content %}
+<form method="get" class="row g-2 mb-4">
+  <div class="col-md-6">
+    <input type="text" name="q" class="form-control" placeholder="Search by child name..." value="{{ query }}">
+  </div>
+
+  <div class="col-md-4">
+    <select name="age" class="form-select">
+      <option value="">All Ages</option>
+      {% for option in age_options %}
+        <option value="{{ option }}" {% if age_range == option %}selected{% endif %}>{{ option }}</option>
+      {% endfor %}
+    </select>    
+  </div>
+
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-dark w-100">Filter</button>
+  </div>
+</form>
+
+
+<div class="container py-4">
+  <h2 class="mb-4 text-center">My SubPrograms</h2>
+
+  {% for subprogram, enrollments in subprograms_with_children %}
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <h4>{{ subprogram.title }}</h4>
+        <p><strong>Age Range:</strong> {{ subprogram.min_age }}–{{ subprogram.max_age }} | <strong>Gender:</strong> {{ subprogram.gender }}</p>
+        <p><strong>Start Date:</strong> {{ subprogram.start_date }} | <strong>Duration:</strong> {{ subprogram.duration }} weeks</p>
+
+        <h5 class="mt-4">Enrolled Children:</h5>
+        {% if enrollments %}
+          <ul class="list-group">
+            {% for enrollment in enrollments %}
+              <li class="list-group-item">
+                {{ enrollment.child.name }} ({{ enrollment.child.age }} years, {{ enrollment.child.gender }})
+                – Parent: {{ enrollment.child.parent.username }}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-muted">No children enrolled yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
