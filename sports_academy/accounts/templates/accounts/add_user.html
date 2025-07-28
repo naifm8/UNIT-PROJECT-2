@@ -1,66 +1,70 @@
 {% extends 'base.html' %}
 {% block title %}Add User{% endblock %}
+{% load static %}
+{% load form_filters %}
+
 {% block content %}
-  <div class="container py-4" style="max-width: 500px;">
-    <h2>Add New User</h2>
-    <form method="post">
-      {% csrf_token %}
-    
-      <div class="mb-3">
-        <label>Username</label>
-        {{ form.username }}
-      </div>
-    
-      <div class="mb-3">
-        <label>Email</label>
-        {{ form.email }}
-      </div>
-    
-      <div class="mb-3">
-        <label>Role</label>
-        {{ form.role }}
-      </div>
-    
-      <div id="coach-fields" style="display: none;">
+  <div class="container py-4" style="max-width: 600px;">
+    <div class="card shadow-sm rounded p-4">
+      <h2 class="mb-4 text-center">Add New User</h2>
+
+      <form method="post">
+        {% csrf_token %}
+
         <div class="mb-3">
-          <label>Sport</label>
-          {{ form.sport }}
+          <label class="form-label">Username</label>
+          {{ form.username|add_class:"form-control" }}
         </div>
+
         <div class="mb-3">
-          <label>Experience (years)</label>
-          {{ form.experience_years }}
+          <label class="form-label">Email</label>
+          {{ form.email|add_class:"form-control" }}
         </div>
-      </div>
-    
-      <div class="mb-3">
-        <label>Password</label>
-        {{ form.password1 }}
-      </div>
-    
-      <div class="mb-3">
-        <label>Confirm Password</label>
-        {{ form.password2 }}
-      </div>
-    
-      <button type="submit" class="btn btn-dark w-100">Create User</button>
-    </form>
-    
-    <script>
-      const roleField = document.getElementById("id_role");
-      const coachFields = document.getElementById("coach-fields");
-    
-      function toggleCoachFields() {
-        if (roleField.value === "coach") {
-          coachFields.style.display = "block";
-        } else {
-          coachFields.style.display = "none";
-        }
-      }
-    
-      roleField.addEventListener("change", toggleCoachFields);
-      document.addEventListener("DOMContentLoaded", toggleCoachFields);
-    </script>
-    
-    
+
+        <div class="mb-3">
+          <label class="form-label">Role</label>
+          {{ form.role|add_class:"form-select" }}
+        </div>
+
+        <div id="coach-fields" style="display: none;">
+          <hr>
+          <h5 class="mb-3">Coach Details</h5>
+
+          <div class="mb-3">
+            <label class="form-label">Sport</label>
+            {{ form.sport|add_class:"form-select" }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Experience (years)</label>
+            {{ form.experience_years|add_class:"form-control" }}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          {{ form.password1|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Confirm Password</label>
+          {{ form.password2|add_class:"form-control" }}
+        </div>
+
+        <button type="submit" class="btn btn-dark w-100 rounded-pill">Create User</button>
+      </form>
+    </div>
   </div>
+
+  <script>
+    const roleField = document.getElementById("id_role");
+    const coachFields = document.getElementById("coach-fields");
+
+    function toggleCoachFields() {
+      coachFields.style.display = roleField.value === "coach" ? "block" : "none";
+    }
+
+    roleField.addEventListener("change", toggleCoachFields);
+    document.addEventListener("DOMContentLoaded", toggleCoachFields);
+  </script>
 {% endblock %}

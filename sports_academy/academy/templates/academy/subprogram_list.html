@@ -2,77 +2,134 @@
 {% load static %}
 {% with show_create_subprogram=show_create_subprogram sport_slug=sport_slug %}
 {% block title %}{{ parent_program.get_sport_type_display }} Programs{% endblock %}
+
 {% block content %}
-  <div class="container py-4">
-    <form method="get" class="row g-3 mb-4">
-  <div class="col-md-3">
-    <input type="text" name="q" value="{{ query }}" placeholder="Search by title" class="form-control">
-  </div>
+<style>
+  .filter-form .form-control,
+  .filter-form .form-select {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.9rem;
+  }
 
-  <div class="col-md-2">
-    <select name="gender" class="form-select">
-      <option value="">All Genders</option>
-      <option value="boys" {% if gender == "boys" %}selected{% endif %}>Boys</option>
-      <option value="girls" {% if gender == "girls" %}selected{% endif %}>Girls</option>
-      <option value="any" {% if gender == "any" %}selected{% endif %}>Any</option>
-    </select>
-  </div>
+  .create-btn {
+    background-color: #000;
+    color: #fff;
+    border-radius: 50px;
+    padding: 6px 18px;
+    font-size: 0.9rem;
+  }
 
-  <div class="col-md-2">
-    <select name="age" class="form-select">
-      <option value="">All Ages</option>
-      {% for range in age_ranges %}
-        <option value="{{ range }}" {% if age == range %}selected{% endif %}>{{ range }}</option>
-      {% endfor %}
-    </select>    
-  </div>
+  .subprogram-card {
+    position: relative;
+    height: 250px;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #000;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
 
-  <div class="col-md-3">
-    <input type="text" name="coach" value="{{ coach }}" placeholder="Coach name" class="form-control">
-  </div>
+  .subprogram-card .background {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(60%);
+    z-index: 1;
+  }
 
-  <div class="col-md-2">
-    <button type="submit" class="btn btn-dark w-100">Filter</button>
-  </div>
-</form>
+  .subprogram-card .title {
+    position: relative;
+    z-index: 2;
+    font-size: 1.25rem;
+    font-weight: bold;
+    padding: 0 10px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
 
-    <h2 class="text-center mb-4">{{ parent_program.get_sport_type_display }} SubPrograms</h2>
-    {% if user.is_authenticated and user.role in 'admin coach' %}
-      <a href="{% url 'academy:subprogram_create' sport_slug %}" class="btn btn-primary mb-3">+ Create SubProgram</a>
-    {% endif %}
-    <div class="row">
-      {% for sub in subprograms %}
-        <div class="col-md-4 mb-4">
-          <a href="{% url 'academy:subprogram_detail' sub.id %}" class="text-decoration-none text-dark">
-            <div class="card h-100">
-              {% if sub.image %}
-                <img src="{{ sub.image.url }}" class="card-img-top" alt="{{ sub.title }}">
-              {% else %}
-                <img src="{% static 'images/default-subprogram.webp' %}" class="card-img-top" alt="Default Image">
-              {% endif %}
-              <div class="card-body">
-                <h5>{{ sub.title }}</h5>
-                <p><strong>Age:</strong> {{ sub.min_age }} - {{ sub.max_age }}</p>
-                <p><strong>Gender:</strong> {{ sub.get_gender_display }}</p>
-            
-                {% if sub.coach %}
-                  <p><strong>Coach:</strong> {{ sub.coach.first_name }} {{ sub.coach.last_name }} ({{ sub.coach.experience_years }} yrs)</p>
-                {% endif %}
-              
-              {% if user.is_authenticated and user.role in 'admin coach' %}
-                <a href="{% url 'academy:subprogram_edit' sub.id %}" class="btn btn-outline-primary btn-sm">Edit</a>
-                <a href="{% url 'academy:subprogram_delete' sub.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
-              {% endif %}
-              </div>
-            
-            </div>
-          </a>
-        </div>
-      {% empty %}
-        <p class="text-center">No subprograms available for this sport yet.</p>
-      {% endfor %}
+  .subprogram-card:hover .title {
+    transform: scale(1.3);
+    opacity: 0.95;
+  }
+
+  .home-link {
+    margin-top: 30px;
+  }
+</style>
+
+
+<div class="container py-3">
+
+  <!-- Filter Form -->
+  <form method="get" class="row gx-2 gy-2 align-items-center mb-4 filter-form">
+    <div class="col-md-3">
+      <input type="text" name="q" value="{{ query }}" placeholder="Search title" class="form-control">
     </div>
-    <a href="{% url 'academy:home' %}" class="btn btn-secondary mb-3">← Home</a>
+    <div class="col-md-2">
+      <select name="gender" class="form-select">
+        <option value="">Gender</option>
+        <option value="boys" {% if gender == "boys" %}selected{% endif %}>Boys</option>
+        <option value="girls" {% if gender == "girls" %}selected{% endif %}>Girls</option>
+        <option value="any" {% if gender == "any" %}selected{% endif %}>Any</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <select name="age" class="form-select">
+        <option value="">Age</option>
+        {% for range in age_ranges %}
+          <option value="{{ range }}" {% if age == range %}selected{% endif %}>{{ range }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <input type="text" name="coach" value="{{ coach }}" placeholder="Coach name" class="form-control">
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-dark w-100 rounded-pill">Filter</button>
+    </div>
+  </form>
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">{{ parent_program.get_sport_type_display }} SubPrograms</h2>
+    {% if user.is_authenticated and user.role in 'admin coach' %}
+      <a href="{% url 'academy:subprogram_create' sport_slug %}" class="create-btn text-decoration-none">+ Create SubProgram</a>
+    {% endif %}
   </div>
+
+  <!-- SubProgram Cards -->
+  <div class="row">
+    {% for sub in subprograms %}
+      <div class="col-md-4 mb-4">
+        {% if user.is_authenticated and user.role in 'admin coach' %}
+          <a href="{% url 'academy:subprogram_edit' sub.id %}" class="btn btn-outline-primary btn-sm">Edit</a>
+          <a href="{% url 'academy:subprogram_delete' sub.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+        {% endif %}
+        <a href="{% url 'academy:subprogram_detail' sub.id %}" class="text-decoration-none">
+          <div class="subprogram-card">
+            <div class="background" style="background-image: url(
+              {% if sub.image %}
+                '{{ sub.image.url }}'
+              {% else %}
+                '{% static "images/default-subprogram.webp" %}'
+              {% endif %}
+            );"></div>
+            <div class="title">{{ sub.title }}</div>
+          </div>
+        </a>
+      </div>
+    {% empty %}
+      <p class="text-center text-muted">No subprograms available for this sport yet.</p>
+    {% endfor %}
+  </div>
+
+  <!-- Back Home -->
+  <div class="home-link">
+    <a href="{% url 'academy:home' %}" class="btn btn-outline-secondary rounded-pill">← Home</a>
+  </div>
+</div>
 {% endblock %}
 {% endwith %}

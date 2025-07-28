@@ -1,99 +1,100 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load form_filters %}
+
 {% block content %}
-  <h2>Register</h2>
-<!-- Register Form -->
-<form method="post">
-  {% csrf_token %}
+<div class="container mt-3" style="max-width: 700px;">
+  <h2 class="mb-4 text-center">Create Your Account</h2>
 
-  <!-- Username -->
-  <div class="mb-3">
-    <label>Username</label>
-    {{ form.username }}
-    {% if form.username.errors %}
-      <div class="text-danger small">{{ form.username.errors.0 }}</div>
-    {% endif %}
-  </div>
+  <form method="post" class="bg-white p-4 rounded shadow-sm border">
+    {% csrf_token %}
 
-  <!-- First_Name -->
-  <div class="mb-3">
-    {{ form.first_name.label_tag }}
-    {{ form.first_name }}
-  </div>
-  
-  <!-- Last_Name -->
-  <div class="mb-3">
-    {{ form.last_name.label_tag }}
-    {{ form.last_name }}
-  </div>  
-
-  <!-- Email -->
-  <div class="mb-3">
-    <label>Email</label>
-    {{ form.email }}
-    {% if form.email.errors %}
-      <div class="text-danger small">{{ form.email.errors.0 }}</div>
-    {% endif %}
-  </div>
-
-  <!-- Role -->
-  <div class="mb-3">
-    <label>Role</label>
-    {{ form.role }}
-    {% if form.role.errors %}
-      <div class="text-danger small">{{ form.role.errors.0 }}</div>
-    {% endif %}
-  </div>
-
-  <!-- Coach-specific fields -->
-  <div id="coach-fields" style="display: none;">
+    <!-- Username -->
     <div class="mb-3">
-      <label>Sport</label>
-      {{ form.sport }}
-      {% if form.sport.errors %}
-        <div class="text-danger small">{{ form.sport.errors.0 }}</div>
+      <label class="form-label">Username</label>
+      {{ form.username|add_class:"form-control" }}
+      {% if form.username.errors %}
+        <div class="text-danger small">{{ form.username.errors.0 }}</div>
       {% endif %}
     </div>
 
+    <!-- First Name -->
     <div class="mb-3">
-      <label>Experience (years)</label>
-      {{ form.experience_years }}
-      {% if form.experience_years.errors %}
-        <div class="text-danger small">{{ form.experience_years.errors.0 }}</div>
+      <label class="form-label">First Name</label>
+      {{ form.first_name|add_class:"form-control" }}
+    </div>
+
+    <!-- Last Name -->
+    <div class="mb-3">
+      <label class="form-label">Last Name</label>
+      {{ form.last_name|add_class:"form-control" }}
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      {{ form.email|add_class:"form-control" }}
+      {% if form.email.errors %}
+        <div class="text-danger small">{{ form.email.errors.0 }}</div>
       {% endif %}
     </div>
-  </div>
 
-  <!-- Password -->
-  <div class="mb-3">
-    <label>Password</label>
-    {{ form.password1 }}
-    {% if form.password1.errors %}
-      <div class="text-danger small">{{ form.password1.errors.0 }}</div>
-    {% endif %}
-  </div>
+    <!-- Role -->
+    <div class="mb-3">
+      <label class="form-label">Role</label>
+      {{ form.role|add_class:"form-select" }}
+      {% if form.role.errors %}
+        <div class="text-danger small">{{ form.role.errors.0 }}</div>
+      {% endif %}
+    </div>
 
-  <!-- Confirm Password -->
-  <div class="mb-3">
-    <label>Confirm Password</label>
-    {{ form.password2 }}
-    {% if form.password2.errors %}
-      <div class="text-danger small">{{ form.password2.errors.0 }}</div>
-    {% endif %}
-  </div>
+    <!-- Coach-specific fields -->
+    <div id="coach-fields" style="display: none;">
+      <div class="mb-3">
+        <label class="form-label">Sport</label>
+        {{ form.sport|add_class:"form-select" }}
+        {% if form.sport.errors %}
+          <div class="text-danger small">{{ form.sport.errors.0 }}</div>
+        {% endif %}
+      </div>
 
-  <button type="submit" class="btn btn-dark w-100">Register</button>
-</form>
+      <div class="mb-3">
+        <label class="form-label">Experience (years)</label>
+        {{ form.experience_years|add_class:"form-control" }}
+        {% if form.experience_years.errors %}
+          <div class="text-danger small">{{ form.experience_years.errors.0 }}</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Password -->
+    <div class="mb-3">
+      <label class="form-label">Password</label>
+      {{ form.password1|add_class:"form-control" }}
+      {% if form.password1.errors %}
+        <div class="text-danger small">{{ form.password1.errors.0 }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="mb-3">
+      <label class="form-label">Confirm Password</label>
+      {{ form.password2|add_class:"form-control" }}
+      {% if form.password2.errors %}
+        <div class="text-danger small">{{ form.password2.errors.0 }}</div>
+      {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-dark w-100 rounded-pill">Register</button>
+  </form>
+</div>
 
 <script>
   const roleField = document.getElementById("id_role");
   const coachFields = document.getElementById("coach-fields");
 
   function toggleCoachFields() {
-    if (roleField.value === "coach") {
-      coachFields.style.display = "block";
-    } else {
-      coachFields.style.display = "none";
-    }
+    coachFields.style.display = roleField.value === "coach" ? "block" : "none";
   }
 
   if (roleField) {
@@ -101,6 +102,4 @@
     document.addEventListener("DOMContentLoaded", toggleCoachFields);
   }
 </script>
-
-
 {% endblock %}

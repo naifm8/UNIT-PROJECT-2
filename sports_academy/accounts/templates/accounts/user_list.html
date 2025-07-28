@@ -1,54 +1,103 @@
 {% extends 'base.html' %}
 {% block title %}Manage Users{% endblock %}
-{% block content %}
-  <div class="container py-4">
-    <h2>Coaches</h2>
-    <ul>
-      {% for coach in coaches %}
-        <li>
-          <strong>{{ coach.first_name }} {{ coach.last_name }}</strong> - {{ coach.email }}<br>
-          Sport: {{ coach.sport}} | Experience: {{ coach.experience_years }} years
-          <a href="{% url 'accounts:delete_user' coach.id %}" class="btn btn-sm btn-danger">Delete</a>
-        </li>
-     {% endfor %}
-    </ul>
 
-    <hr>
-    <h2>Parents</h2>
-    <ul>
-      {% for parent in parents %}
-        <li>
-          <strong>{{ parent.first_name }} {{ parent.last_name }}</strong> - {{ parent.email }}
-          <a href="{% url 'accounts:delete_user' parent.id %}" class="btn btn-sm btn-danger">Delete</a>
-    
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Users Management</h2>
+
+  <div class="table-responsive mb-5">
+    <h4 class="mb-3">Coaches</h4>
+    <table class="table table-hover align-middle border">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Sport</th>
+          <th>Experience</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for coach in coaches %}
+        <tr>
+          <td>#{{ forloop.counter }}</td>
+          <td><strong>{{ coach.first_name }} {{ coach.last_name }}</strong></td>
+          <td>{{ coach.email }}</td>
+          <td>{{ coach.sport }}</td>
+          <td>{{ coach.experience_years }} yrs</td>
+          <td>
+            <a href="{% url 'accounts:delete_user' coach.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center">No coaches found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-responsive">
+<h4 class="mb-3">Parents & Their Children</h4>
+<div class="row">
+  {% for parent in parents %}
+    <div class="col-md-6 mb-4">
+      <div class="card h-100 shadow-sm" style="min-height: 100%; max-width: 100%;">
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div>
+              <h5 class="card-title mb-1">{{ parent.first_name }} {{ parent.last_name }}</h5>
+              <p class="card-subtitle text-muted">{{ parent.email }}</p>
+            </div>
+            <a href="{% url 'accounts:delete_user' parent.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+          </div>
+
           {% with children=parent.child_set.all %}
             {% if children %}
-              <ul class="mt-2">
+              <hr class="my-2">
+              <h6 class="fw-bold">Children</h6>
+              <ul class="list-group list-group-flush flex-grow-1">
                 {% for child in children %}
-                  <li>
-                    <strong>{{ child.name }}</strong> ({{ child.age }} yrs, {{ child.get_gender_display }})
-                    <a href="{% url 'academy:child_delete' child.id %}" class="btn btn-sm btn-danger">Delete</a>
-                    {% if child.enrollments.exists %}
-                      <ul>
-                        {% for enrollment in child.enrollments.all %}
+                <li class="list-group-item px-0 border-0">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <strong>{{ child.name }}</strong> – {{ child.age }}y, {{ child.get_gender_display }}
+                      <br>
+                      {% if child.enrollments.exists %}
+                        <small class="text-muted">Enrolled in:</small>
+                        <ul class="ps-3 mb-1">
+                          {% for e in child.enrollments.all %}
                           <li>
-                            Enrolled in <strong>{{ enrollment.subprogram.title }}</strong>
-                            on {{ enrollment.date_enrolled|date:"Y-m-d" }}
+                            {{ e.subprogram.title }} ({{ e.date_enrolled|date:"Y-m-d" }})
                           </li>
-                        {% endfor %}
-                      </ul>
-                    {% else %}
-                      <p>No enrollments yet.</p>
-                    {% endif %}
-                  </li>
+                          {% endfor %}
+                        </ul>
+                      {% else %}
+                        <small class="text-muted">No enrollments</small>
+                      {% endif %}
+                    </div>
+                    <div>
+                      <a href="{% url 'academy:child_delete' child.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                  </div>
+                </li>
                 {% endfor %}
               </ul>
             {% else %}
-              <p>No children added.</p>
+              <p class="text-muted mt-3">No children added.</p>
             {% endif %}
           {% endwith %}
-        </li>
-      {% endfor %}
-    </ul>
-  </div>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p class="text-center text-muted">No parents found.</p>
+  {% endfor %}
+</div>
+
+    
+</div>
 {% endblock %}
+

@@ -7,48 +7,107 @@
   <title>{% block title %}SportSphere{% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'style.css' %}" />
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  {% if request.resolver_match.url_name == 'home' %}
+<style>
+  header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: transparent !important;
+    z-index: 1000;
+  }
+  header a {
+    color: white !important;
+    font-size: 1.1rem;
+  }
+  header a:hover {
+    color: #f8f9fa !important;
+    text-decoration: underline;
+  }
+  header .navbar-brand {
+    font-size: 1.75rem;
+  }
+</style>
+{% endif %}
 </head>
-<body>
-  <!-- Header / Navbar -->
-  <header class="navbar">
-    <div class="container">
-      <a href="{% url 'academy:home' %}" class="logo">SportSphere</a>
 
-      <nav class="nav-links">
+<body class="d-flex flex-column min-vh-100">
+
+  {% if request.path == '/' %}
+  <header class="py-4 {% if request.resolver_match.url_name == 'home' %}border-0{% else %}border{% endif %}">
+    <div class="container d-flex justify-content-between align-items-center">
+      <a href="{% url 'academy:home' %}" class="navbar-brand fw-bold {% if request.resolver_match.url_name == 'home' %}text-white{% else %}text-dark{% endif %} text-decoration-none">SportSphere</a>
+      
+      <nav class="d-flex align-items-center gap-4">
         {% if user.is_authenticated %}
-      
           {% if user.role == 'admin' %}
-            <a href="{% url 'accounts:user_list' %}">Dashboard</a>
-            <a href="{% url 'accounts:add_user' %}">+ Add User</a>
-            <a href="{% url 'academy:program_create' %}">+ Create Program</a>
+            <a href="{% url 'accounts:user_list' %}" class="{% if request.resolver_match.url_name == 'home' %}text-white{% else %}text-dark{% endif %} text-decoration-none">Dashboard</a>
+            <a href="{% url 'accounts:add_user' %}" class="{% if request.resolver_match.url_name == 'home' %}text-white{% else %}text-dark{% endif %} text-decoration-none">Add User</a>
+            <a href="{% url 'academy:program_create' %}" class="{% if request.resolver_match.url_name == 'home' %}text-white{% else %}text-dark{% endif %} text-decoration-none">Create Program</a>
           {% endif %}
-      
+  
           {% if user.role == 'coach' %}
-            <a href="{% url 'academy:program_create' %}">+ Create Program</a>
-            <a href="{% url 'academy:coach_dashboard' %}">Dashboard</a>
+            <a href="{% url 'academy:program_create' %}" class="{% if request.resolver_match.url_name == 'home' %}text-white{% else %}text-dark{% endif %} text-decoration-none">Create Program</a>
+            <a href="{% url 'academy:coach_dashboard' %}" class="{% if request.resolver_match.url_name == 'home' %}text-white{% else %}text-dark{% endif %} text-decoration-none">Dashboard</a>
           {% endif %}
-      
+  
           {% if user.role == 'parent' %}
-            <a href="{% url 'academy:child_list' %}">My Children</a>
-            <a href="{% url 'academy:child_create' %}">+ Add Child</a>
+            <a href="{% url 'academy:child_list' %}" class="{% if request.resolver_match.url_name == 'home' %}text-white{% else %}text-dark{% endif %} text-decoration-none">My Children</a>
+            <a href="{% url 'academy:child_create' %}" class="{% if request.resolver_match.url_name == 'home' %}text-white{% else %}text-dark{% endif %} text-decoration-none">Add Child</a>
           {% endif %}
-
-          {% if user.role == 'parent' or user.role == 'coach' %}
-            <a class="nav-link" href="{% url 'academy:inbox' %}">Inbox</a>
+  
+          {% if user.role in 'parent coach' %}
+            <a href="{% url 'academy:inbox' %}" class="{% if request.resolver_match.url_name == 'home' %}text-white{% else %}text-dark{% endif %} text-decoration-none">Inbox</a>
           {% endif %}
-
-      
-          <span>Welcome, {{ user.first_name }}</span>
-          <a href="{% url 'accounts:logout' %}">Logout</a>
-      
+  
+          <a href="{% url 'accounts:logout' %}" class="btn btn-outline-light btn-sm rounded-pill" style="background-color: transparent; border-color: white; color: white;">Logout</a>
+  
         {% else %}
-          <a href="{% url 'accounts:login' %}">Login</a>
-          <a href="{% url 'accounts:register' %}">Register</a>
+          <a href="{% url 'accounts:login' %}" class="{% if request.resolver_match.url_name == 'home' %}text-white{% else %}text-dark{% endif %} text-decoration-none">Login</a>
         {% endif %}
-      </nav>      
-          
+      </nav>
     </div>
   </header>
+  
+{% else %}
+  <header class="border py-3 bg-white">
+    <div class="container d-flex justify-content-between align-items-center">
+      <a href="{% url 'academy:home' %}" class="fw-bold text-dark text-decoration-none fs-5">SportSphere</a>
+      <nav class="d-flex align-items-center gap-4">
+        {% if user.is_authenticated %}
+          
+          {% if user.role == 'admin' %}
+            <a href="{% url 'accounts:user_list' %}" class="text-dark text-decoration-none">Dashboard</a>
+            <a href="{% url 'accounts:add_user' %}" class="text-dark text-decoration-none">Add User</a>
+            <a href="{% url 'academy:program_create' %}" class="text-dark text-decoration-none">Create Program</a>
+          {% endif %}
+
+          {% if user.role == 'coach' %}
+            <a href="{% url 'academy:program_create' %}" class="text-dark text-decoration-none">Create Program</a>
+            <a href="{% url 'academy:coach_dashboard' %}" class="text-dark text-decoration-none">Dashboard</a>
+          {% endif %}
+
+          {% if user.role == 'parent' %}
+            <a href="{% url 'academy:child_list' %}" class="text-dark text-decoration-none">My Children</a>
+            <a href="{% url 'academy:child_create' %}" class="text-dark text-decoration-none">Add Child</a>
+          {% endif %}
+
+          {% if user.role in 'parent coach' %}
+            <a href="{% url 'academy:inbox' %}" class="text-dark text-decoration-none">Inbox</a>
+          {% endif %}
+
+          <a href="{% url 'accounts:logout' %}" class="btn btn-outline-dark btn-sm rounded-pill">Logout</a>
+
+        {% else %}
+          <a href="{% url 'accounts:login' %}" class="text-dark text-decoration-none">Login</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+{% endif %}
+
 
   <script>
     setTimeout(() => {
@@ -56,27 +115,62 @@
       if (messages) messages.style.display = 'none';
     }, 3500);
   </script>
-  
-  <!-- Page Content -->
-  <main class="main-content">
-    {% if messages %}
-      <div id="floating-messages">
-        {% for message in messages %}
-          <div class="toast-message {{ message.tags }}">
+  {% if messages %}
+    <div id="floating-messages" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} shadow-sm mb-2 rounded-pill px-4 py-2">
           {{ message }}
-          </div>
-        {% endfor %}
-      </div>
-    {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main class="main-content py-4 flex-grow-1">
     {% block content %}
     {% endblock %}
   </main>
 
-  <!-- Footer -->
-  <footer class="footer text-center py-3">
-    <p>&copy; 2025 SportSphere. All rights reserved.</p>
+  {% if request.resolver_match.url_name != 'home' %}
+  <footer class="border-top py-5 mt-auto">
+    <div class="container">
+      <div class="row text-start justify-content-between align-items-start">
+  
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">SportSphere</h5>
+          <div class="d-flex gap-3 mt-3">
+            <a href="#" class="text-muted fs-5"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="text-muted fs-5"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="text-muted fs-5"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="text-muted fs-5"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+  
+        <div class="col-md-7 d-flex justify-content-end gap-5">
+  
+          <div>
+            <h6 class="fw-bold">Programs</h6>
+            <ul class="list-unstyled">
+              <li><a href="#" class="text-muted text-decoration-none">All Programs</a></li>
+              <li><a href="#" class="text-muted text-decoration-none">Sub Programs</a></li>
+              <li><a href="#" class="text-muted text-decoration-none">Coaches</a></li>
+            </ul>
+          </div>
+  
+          <div>
+            <h6 class="fw-bold">About</h6>
+            <ul class="list-unstyled">
+              <li><a href="#" class="text-muted text-decoration-none">Our Mission</a></li>
+              <li><a href="#" class="text-muted text-decoration-none">Contact</a></li>
+              <li><a href="#" class="text-muted text-decoration-none">Privacy</a></li>
+            </ul>
+          </div>
+  
+        </div>
+      </div>
+    </div>
   </footer>
+  {% endif %}
   
-  
+
 </body>
 </html>

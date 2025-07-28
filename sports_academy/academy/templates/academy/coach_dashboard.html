@@ -1,52 +1,98 @@
 {% extends 'base.html' %}
 {% block title %}Coach Dashboard{% endblock %}
+{% load static %}
 
 {% block content %}
-<form method="get" class="row g-2 mb-4">
-  <div class="col-md-6">
-    <input type="text" name="q" class="form-control" placeholder="Search by child name..." value="{{ query }}">
-  </div>
+<div class="container py-3">
+  <h2 class="fw-bold mb-3 text-center text-dark">Coach Dashboard</h2>
 
-  <div class="col-md-4">
-    <select name="age" class="form-select">
-      <option value="">All Ages</option>
-      {% for option in age_options %}
-        <option value="{{ option }}" {% if age_range == option %}selected{% endif %}>{{ option }}</option>
-      {% endfor %}
-    </select>    
-  </div>
+  <div class="mb-4 mx-auto" style="max-width: 900px;"> 
+    <form method="get" class="row g-1 align-items-end"> 
 
-  <div class="col-md-2">
-    <button type="submit" class="btn btn-dark w-100">Filter</button>
-  </div>
-</form>
-
-
-<div class="container py-4">
-  <h2 class="mb-4 text-center">My SubPrograms</h2>
-
-  {% for subprogram, enrollments in subprograms_with_children %}
-    <div class="card mb-4 shadow-sm">
-      <div class="card-body">
-        <h4>{{ subprogram.title }}</h4>
-        <p><strong>Age Range:</strong> {{ subprogram.min_age }}–{{ subprogram.max_age }} | <strong>Gender:</strong> {{ subprogram.gender }}</p>
-        <p><strong>Start Date:</strong> {{ subprogram.start_date }} | <strong>Duration:</strong> {{ subprogram.duration }} weeks</p>
-
-        <h5 class="mt-4">Enrolled Children:</h5>
-        {% if enrollments %}
-          <ul class="list-group">
-            {% for enrollment in enrollments %}
-              <li class="list-group-item">
-                {{ enrollment.child.name }} ({{ enrollment.child.age }} years, {{ enrollment.child.gender }})
-                – Parent: {{ enrollment.child.parent.username }}
-              </li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <p class="text-muted">No children enrolled yet.</p>
-        {% endif %}
+      <div class="col-md-5">
+        <label for="q" class="form-label mb-0 small text-muted">Search by Name</label>
+        <input type="text" name="q" id="q" value="{{ query }}" class="form-control form-control-sm rounded-pill px-3 py-1 border-dark" placeholder="Enter child name..."> 
       </div>
+
+      <div class="col-md-5">
+        <label for="age_range" class="form-label mb-0 small text-muted">Filter by Age</label> {# Smaller label, no margin-bottom #}
+        <select name="age" id="age_range" class="form-select form-select-sm rounded-pill px-3 py-1 border-dark">
+          <option value="">All Ages</option>
+          {% for option in age_options %}
+            <option value="{{ option }}" {% if age_range == option %}selected{% endif %}>{{ option }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-2 d-grid">
+        <button type="submit" class="btn btn-dark btn-sm rounded-pill fw-semibold px-3 py-1 shadow-sm"> 
+          Filter
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+
+
+  <h3 class="fw-bold mb-3 text-center text-dark">My SubPrograms</h3> 
+
+  {% if subprograms_with_children %}
+    <div class="row row-cols-1 g-2"> 
+      {% for subprogram, enrollments in subprograms_with_children %}
+        <div class="col">
+          <div class="card mb-1 shadow-sm rounded-3 border"> 
+            <div class="card-header bg-dark text-white rounded-top-3 py-1"> 
+              <h5 class="mb-0 fw-bold">{{ subprogram.title }}</h5> 
+            </div>
+            <div class="card-body py-2"> 
+              <div class="row g-0 mb-1"> 
+                <div class="col-md-6">
+                  <p class="mb-0 small"><small class="text-muted">Age:</small> <strong>{{ subprogram.min_age }}–{{ subprogram.max_age }}</strong></p> 
+                </div>
+                <div class="col-md-6">
+                  <p class="mb-0 small"><small class="text-muted">Gender:</small> <strong>{{ subprogram.gender }}</strong></p> 
+                </div>
+                <div class="col-md-6">
+                  <p class="mb-0 small"><small class="text-muted">Start:</small> <strong>{{ subprogram.start_date|date:"F j, Y" }}</strong></p> 
+                </div>
+                <div class="col-md-6">
+                  <p class="mb-0 small"><small class="text-muted">Duration:</small> <strong>{{ subprogram.duration_weeks }} wks</strong></p> 
+                </div>
+              </div>
+              
+              <hr class="my-2 border-secondary"> 
+
+              <h6 class="fw-bold mb-1 text-dark">Enrolled Children:</h6> 
+              {% if enrollments %}
+                <ul class="list-group list-group-flush border rounded-3 overflow-hidden">
+                  {% for enrollment in enrollments %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-1 small"> 
+                      <div>
+                        <strong>{{ enrollment.child.name }}</strong> 
+                        <span class="text-muted">({{ enrollment.child.age }} yrs, {{ enrollment.child.get_gender_display }})</span>
+                        <span class="text-muted ms-2">Parent: {{ enrollment.child.parent.get_full_name }}</span>
+                      </div>
+                      <a href="{% url 'academy:send_message' enrollment.child.parent.id %}" class="btn btn-outline-dark btn-sm rounded-pill px-2"> 
+                        Message Parent
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <div class="alert alert-secondary text-center mt-2 py-1 small" role="alert">
+                  <p class="mb-0">No children enrolled in this sub-program yet.</p>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
     </div>
-  {% endfor %}
+  {% else %}
+    <div class="alert alert-info text-center mt-3 py-2" role="alert">
+      <p class="mb-0">No sub-programs found for this coach.</p>
+    </div>
+  {% endif %}
 </div>
 {% endblock %}

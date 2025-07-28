@@ -1,45 +1,77 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}My Children{% endblock %}
+
 {% block content %}
-  <div class="container py-4">
-    <h2 class="mb-4">My Children</h2>
-    <div class="row">
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold mb-0">My Children</h1>
+    <a href="{% url 'academy:child_create' %}" class="btn btn-primary rounded-pill px-4 shadow-sm">
+      <i class="bi bi-plus-circle me-2"></i> Add New Child
+    </a>
+  </div>
+
+  {% if children %}
+    <div class="row row-cols-1 row-cols-md-2 g-4">
       {% for child in children %}
-      <div class="col-md-4 mb-4">
-        <div class="card h-100">
-          {% if child.image %}
-            <img src="{{ child.image.url }}" class="card-img-top" alt="{{ child.name }}">
-          {% else %}
-            <img src="{% static 'images/default-avatar.jpg' %}" class="card-img-top" alt="Default Avatar">
-          {% endif %}          
-          <div class="card-body">
-            <h5 class="card-title">{{ child.name }}</h5>
-            <p><strong>Age:</strong> {{ child.age }}</p>
-            <p><strong>Gender:</strong> {{ child.get_gender_display }}</p>
-    
-            {% if child.enrollments.exists %}
-              <hr>
-              <p><strong>Enrolled in:</strong></p>
-              <ul>
-                {% for e in child.enrollments.all %}
-                  <li>{{ e.subprogram.title }} ({{ e.subprogram.program.get_sport_type_display }})</li>
-                  {% if e.subprogram.coach %}
-                    <a href="{% url 'academy:send_message' e.subprogram.coach.id %}" class="btn btn-outline-secondary mt-2">Contact Coach</a>
-                  {% endif %}
-                {% endfor %}
-              </ul>
-            {% else %}
-              <p class="text-muted">Not enrolled in any program</p>
-            {% endif %}
-          </div>
-          <div class="d-flex justify-content-between mt-2">
-            <a href="{% url 'academy:child_edit' child.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
-            <a href="{% url 'academy:child_delete' child.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+        <div class="col">
+          <div class="card h-100 shadow-sm rounded-3">
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex align-items-center mb-3">
+                <img src="{% if child.image %}{{ child.image.url }}{% else %}{% static 'images/default-avatar.jpg' %}{% endif %}"
+                     alt="{{ child.name }}"
+                     class="rounded-circle me-3 border border-3 border-light-subtle"
+                     style="width: 80px; height: 80px; object-fit: cover;">
+
+                <div>
+                  <h5 class="card-title mb-0">{{ child.name }}</h5>
+                  <p class="card-text text-muted mb-0">Age: {{ child.age }} | Gender: {{ child.get_gender_display }}</p>
+                </div>
+              </div>
+
+              <hr class="my-3">
+
+              {% if child.enrollments.exists %}
+                <p class="fw-bold mb-2">Enrolled Programs:</p>
+                <ul class="list-unstyled mb-0">
+                  {% for e in child.enrollments.all %}
+                    <li class="mb-2">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <strong>{{ e.subprogram.title }}</strong><br>
+                          <small class="text-muted">{{ e.subprogram.program.get_sport_type_display }}</small>
+                          <small class="text-muted d-block">Enrolled: {{ e.date_enrolled|date:"F j, Y" }}</small>
+                        </div>
+                        {% if e.subprogram.coach %}
+                          <a href="{% url 'academy:send_message' e.subprogram.coach.id %}" class="btn btn-outline-dark btn-sm rounded-pill px-3">
+                            Contact Coach
+                          </a>
+                        {% endif %}
+                      </div>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <p class="text-muted text-center mt-3 mb-0">Not enrolled in any program yet.</p>
+              {% endif %}
+
+              <div class="mt-auto pt-3 border-top d-flex justify-content-end gap-2">
+                <a href="{% url 'academy:child_edit' child.id %}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                  Edit Profile
+                </a>
+                <a href="{% url 'academy:child_delete' child.id %}" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                  Remove Child
+                </a>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    {% endfor %}    
+      {% endfor %}
     </div>
-  </div>
+  {% else %}
+    <div class="alert alert-info text-center" role="alert">
+      <p class="mb-0">You haven’t added any children yet. Click "Add New Child" to get started!</p>
+    </div>
+  {% endif %}
+</div>
 {% endblock %}

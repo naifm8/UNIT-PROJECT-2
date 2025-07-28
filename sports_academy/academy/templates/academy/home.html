@@ -1,43 +1,117 @@
-{% extends 'base.html' %} {% block title %}Welcome to SportSphere{% endblock %}
-{% block content %}
-<div class="hero text-center py-5">
-  <h1>Welcome to SportSphere</h1>
-  <p>Explore sports programs for kids and teens!</p>
-</div>
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Welcome to SportSphere{% endblock %}
 
-<div class="container py-4">
-  <div class="row">
-    {% for program in programs %}
-    <div class="col-md-4 mb-4">
-      <div class="card">
-        <img
-          src="{{ program.image.url }}"
-          class="card-img-top"
-          alt="{{ program.get_sport_type_display }}"
-        />
-        <div class="card-body text-center">
-          <h5>{{ program.get_sport_type_display }}</h5>
-          <a
-            href="{% url 'academy:subprogram_list' program.sport_type %}"
-            class="btn btn-outline-dark btn-sm"
-            >View SubPrograms</a
-          >
-        </div>
-        {% if user.is_authenticated and user.role in 'admin coach' %}
-        <a
-          href="{% url 'academy:program_edit' program.id %}"
-          class="btn btn-sm btn-outline-primary mt-2"
-          >Edit</a
-        >
-        <a
-          href="{% url 'academy:program_delete' program.id %}"
-          class="btn btn-sm btn-outline-danger mt-2"
-          >Delete</a
-        >
-        {% endif %}
+{% block content %}
+
+<style>
+  .hero-section {
+    position: relative;
+    background: url("{% static 'images/hero-sports.jpg' %}") center 40%/cover no-repeat; 
+    height: 68vh;
+    margin-top: 0; 
+    display: flex; 
+    align-items: center; 
+  }
+
+  .hero-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.489); 
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding-top: 56px; 
+  }
+
+
+  .program-card {
+    position: relative;
+    overflow: hidden; 
+  }
+
+  .program-card .card {
+    transition: transform 0.3s ease-in-out; 
+  }
+
+  .program-card .card:hover {
+    transform: scale(1.03); 
+  }
+
+  .sport-title {
+    transition: color 0.3s ease-in-out;
+  }
+
+  .program-card .card:hover .sport-title {
+    color: #ffc107 !important; 
+  }
+
+
+  html, body {
+    overflow-x: hidden; 
+  }
+
+  body {
+    overflow-y: auto; 
+  }
+
+  main.main-content {
+      padding: 0 !important; 
+  }
+</style>
+
+<section class="hero-section text-white">
+  <div class="container hero-content">
+    <div class="row">
+      <div class="col-md-6">
+        <h1 class="display-5 fw-bold">Empowering Youth Through Sports</h1>
+        <p class="lead mt-3">
+          Join our programs designed to inspire, develop, and motivate kids and teens through Football, Basketball, and Tennis.
+        </p>
+        <a href="{% url 'accounts:register' %}" class="btn btn-danger rounded-pill px-4 py-2 mt-3">Register</a>
       </div>
     </div>
-    {% endfor %}
   </div>
+</section>
+
+<div class="w-100 d-flex flex-wrap">
+  {% for program in programs %}
+  <div class="program-card flex-grow-1" style="flex: 1 1 33.3333%; height: 300px; position: relative;">
+    <a href="{% url 'academy:subprogram_list' program.sport_type %}" class="text-decoration-none d-block h-100 w-100">
+
+      <div class="card bg-dark text-white border-0 rounded-0 h-100 w-100 position-relative">
+
+        <div
+          class="position-absolute top-0 start-0 w-100 h-100"
+          style="
+            background: url('{{ program.image.url }}') center center/cover no-repeat;
+            filter: brightness(60%);
+            z-index: 1;
+          "
+        ></div>
+
+      <div class="position-absolute bottom-0 start-0 end-0 text-center text-white mb-4 px-2" style="z-index: 2;">
+        <h2 class="fw-bold sport-title">
+          {{ program.get_sport_type_display }}
+        </h2>
+      </div>
+
+      </div>
+    </a>
+
+    {% if user.is_authenticated and user.role in 'admin coach' %}
+    <div class="position-absolute top-0 end-0 m-2 d-flex gap-2 z-3">
+      <a href="{% url 'academy:program_edit' program.id %}" class="btn btn-sm btn-outline-light rounded-pill px-3 py-1">Edit</a>
+      <a href="{% url 'academy:program_delete' program.id %}" class="btn btn-sm btn-outline-light rounded-pill px-3 py-1">Delete</a>
+    </div>
+    {% endif %}
+
+  </div>
+  {% endfor %}
 </div>
+
 {% endblock %}

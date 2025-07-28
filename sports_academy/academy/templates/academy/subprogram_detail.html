@@ -4,29 +4,36 @@
 
 {% block content %}
 <div class="container py-5">
-  <div class="row align-items-center">
-    <div class="col-md-6">
+  <div class="d-flex flex-column flex-md-row align-items-start gap-4">
+    
+    <!-- Left: Image -->
+    <div class="flex-shrink-0">
       {% if subprogram.image %}
-        <img src="{{ subprogram.image.url }}" alt="{{ subprogram.title }}" class="img-fluid rounded shadow">
+        <img src="{{ subprogram.image.url }}" alt="{{ subprogram.title }}"  style="max-height: 500px; object-fit: cover; border-radius: 15px;">
       {% else %}
-        <img src="{% static 'images/default-subprogram.webp' %}" alt="Default Image" class="img-fluid rounded shadow">
+        <img src="{% static 'images/default-subprogram.webp' %}" alt="Default Image" class="img-fluid rounded shadow" style="max-height: 400px; object-fit: cover;">
       {% endif %}
     </div>
-    <div class="col-md-6">
-      <h2>{{ subprogram.title }}</h2>
-      <p><strong>Age Range:</strong> {{ subprogram.min_age }} - {{ subprogram.max_age }}</p>
-      <p><strong>Gender:</strong> {{ subprogram.get_gender_display }}</p>
-      <p><strong>Start Date:</strong> {{ subprogram.start_date }}</p>
-      <p><strong>Duration:</strong> {{ subprogram.duration_weeks }} weeks</p>
-      <p><strong>Coach:</strong> {{ subprogram.coach.first_name }} {{ subprogram.coach.first_name }}</p>
-      <p><strong>experience:</strong> ({{ subprogram.coach.experience_years }} yrs)</p>
-      <p><strong>Description:</strong>{{ subprogram.description }}</p>
+
+    <!-- Right: Details -->
+    <div class="flex-grow-1 ms-md-4">
+      <h2 class="fw-bold">{{ subprogram.title }}</h2>
+      <p class="text-muted">{{ subprogram.program.sport_type }}</p>
+      <p class="text-secondary">{{ subprogram.description }}</p>
+
+      <p class="mb-1"><strong>Age Range:</strong> {{ subprogram.min_age }} - {{ subprogram.max_age }}</p>
+      <p class="mb-1"><strong>Gender:</strong> {{ subprogram.get_gender_display }}</p>
+      <p class="mb-1"><strong>Start Date:</strong> {{ subprogram.start_date }}</p>
+      <p class="mb-1"><strong>Duration:</strong> {{ subprogram.duration_weeks }} weeks</p>
+      <p class="mb-1"><strong>Coach:</strong> {{ subprogram.coach.first_name }} {{ subprogram.coach.last_name }}</p>
+      <p class="mb-4"><strong>Experience:</strong> {{ subprogram.coach.experience_years }} yrs</p>
 
       {% if user.is_authenticated and user.role == 'parent' %}
-        <a href="{% url 'academy:enroll_child' subprogram.id %}" class="btn btn-success">Enroll</a>
+        <a href="{% url 'academy:enroll_child' subprogram.id %}" class="btn btn-success rounded-pill px-4 me-2">Enroll</a>
       {% endif %}
-      <a href="{% url 'academy:subprogram_list' subprogram.program.sport_type %}" class="btn btn-secondary ms-2">← Back</a>
+      <a href="{% url 'academy:subprogram_list' subprogram.program.sport_type %}" class="btn btn-outline-dark rounded-pill px-4">← Back</a>
     </div>
   </div>
 </div>
 {% endblock %}
+

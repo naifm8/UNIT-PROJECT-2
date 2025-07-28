@@ -3,52 +3,124 @@
 {% load static %}
 
 {% block content %}
-<div class="container py-5">
-  <h2 class="mb-4">Inbox</h2>
+<div class="container py-5"> 
+  <h1 class="fw-bold mb-5 text-center text-dark">Your Inbox</h1>
 
-  <div class="row">
-    <div class="col-md-6">
-      <h4 class="mb-3">Received Messages</h4>
-      {% for msg in received_messages %}
-        <div class="card mb-3 {% if not msg.is_read %}border-warning{% endif %}">
-          <div class="card-body">
-            <h5 class="card-title">{{ msg.subject }}</h5>
-            <p class="card-text">{{ msg.content }}</p>
-            <p class="card-text">
-              <strong>From:</strong> {{ msg.sender.get_full_name }}
-              <small class="text-muted">({{ msg.sent_at|date:"M d, Y H:i" }})</small>
-            </p>
-            
-            {% if not msg.is_read %}
-              <span class="badge bg-warning text-dark">Unread</span>
-            {% endif %}
-      
-            <a href="{% url 'academy:send_message' msg.sender.id %}" class="btn btn-sm btn-outline-secondary mt-2">Reply</a>
-          </div>
+  
+  <div class="row justify-content-center g-4"> 
+    
+    
+    <div class="col-12 col-lg-5"> 
+      <div class="card shadow-sm rounded-3 h-100 border">
+        <div class="card-header bg-dark text-white rounded-top-3 py-3">
+          <h4 class="mb-0">Received Messages</h4>
         </div>
-      {% empty %}
-        <p class="text-muted">No received messages.</p>
-      {% endfor %}
+        <div class="card-body">
+          {% for msg in received_messages %}
+            <div class="card mb-3 {% if not msg.is_read %}border-dark border-3{% else %}border{% endif %}">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h5 class="card-title mb-0 text-dark fw-bold">{{ msg.subject }}</h5>
+                  {% if not msg.is_read %}
+                    <span class="badge bg-dark text-white p-2">New Message</span>
+                  {% endif %}
+                </div>
+                <p class="card-text text-muted small mb-1">
+                  <strong>From:</strong> {{ msg.sender.get_full_name }}
+                </p>
+                <p class="card-text text-muted small mb-3">
+                  <i class="bi bi-clock me-1"></i> Received: {{ msg.sent_at|date:"F j, Y, h:i A" }}
+                </p>
+                <p class="card-text text-secondary mb-3">{{ msg.content|truncatechars:150 }}</p>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                  <a href="{% url 'academy:send_message' msg.sender.id %}" class="btn btn-outline-dark btn-sm rounded-pill px-3">Reply</a>
+                </div>
+              </div>
+            </div>
+
+            
+            <div class="modal fade" id="messageModal{{ msg.id }}" tabindex="-1" aria-labelledby="messageModalLabel{{ msg.id }}" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header bg-light">
+                    <h5 class="modal-title" id="messageModalLabel{{ msg.id }}">{{ msg.subject }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p class="text-muted small"><strong>From:</strong> {{ msg.sender.get_full_name }} ({{ msg.sent_at|date:"F j, Y, h:i A" }})</p>
+                    <hr>
+                    <p>{{ msg.content }}</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Close</button>
+                    <a href="{% url 'academy:send_message' msg.sender.id %}" class="btn btn-dark rounded-pill">Reply</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {% empty %}
+            <div class="alert alert-secondary text-center" role="alert">
+              <p class="mb-0">You have no received messages.</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
     </div>
 
-    <div class="col-md-6">
-      <h4 class="mb-3">Sent Messages</h4>
-      {% for msg in sent_messages %}
-        <div class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title">{{ msg.subject }}</h5>
-            <p class="card-text">{{ msg.content }}</p>
-            <p class="card-text">
-              <strong>To:</strong> {{ msg.recipient.get_full_name }}
-              <small class="text-muted">({{ msg.sent_at|date:"M d, Y H:i" }})</small>
-            </p>
-          </div>
+    
+    <div class="col-12 col-lg-5"> 
+      <div class="card shadow-sm rounded-3 h-100 border">
+        <div class="card-header bg-dark text-white rounded-top-3 py-3">
+          <h4 class="mb-0">Sent Messages</h4>
         </div>
-      {% empty %}
-        <p class="text-muted">No sent messages.</p>
-      {% endfor %}
+        <div class="card-body">
+          {% for msg in sent_messages %}
+            <div class="card mb-3 border">
+              <div class="card-body">
+                <h5 class="card-title mb-2 text-dark fw-bold">{{ msg.subject }}</h5>
+                <p class="card-text text-muted small mb-1">
+                  <strong>To:</strong> {{ msg.recipient.get_full_name }}
+                </p>
+                <p class="card-text text-muted small mb-3">
+                  <i class="bi bi-clock me-1"></i> Sent: {{ msg.sent_at|date:"F j, Y, h:i A" }}
+                </p>
+                <p class="card-text text-secondary mb-3">{{ msg.content|truncatechars:150 }}</p>
+                <div class="text-end">
+                </div>
+              </div>
+            </div>
+
+            
+            <div class="modal fade" id="messageModalSent{{ msg.id }}" tabindex="-1" aria-labelledby="messageModalSentLabel{{ msg.id }}" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header bg-light">
+                    <h5 class="modal-title" id="messageModalSentLabel{{ msg.id }}">{{ msg.subject }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p class="text-muted small"><strong>To:</strong> {{ msg.recipient.get_full_name }} ({{ msg.sent_at|date:"F j, Y, h:i A" }})</p>
+                    <hr>
+                    <p>{{ msg.content }}</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {% empty %}
+            <div class="alert alert-secondary text-center" role="alert">
+              <p class="mb-0">You have no sent messages.</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
     </div>
   </div>
 </div>
-{% endblock %}
 
+{% endblock %}
