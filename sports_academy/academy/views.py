@@ -11,15 +11,42 @@ def home_view(request):
 
 
 def subprogram_list_view(request, sport_slug):
-    parent_program = get_object_or_404(Program, sport_type__iexact=sport_slug)
-    subprograms = SubProgram.objects.filter(program=parent_program)
+    query = request.GET.get('q', '')
+    gender = request.GET.get('gender')
+    age = request.GET.get('age')
+    coach = request.GET.get('coach', '')
 
-    return render(request, 'academy/subprogram_list.html', {
-        'parent_program': parent_program,
+    subprograms = SubProgram.objects.filter(program__sport_type__iexact=sport_slug)
+
+    if query:
+        subprograms = subprograms.filter(title__icontains=query)
+
+    if gender:
+        subprograms = subprograms.filter(gender=gender)
+
+    if age:
+        try:
+            min_age, max_age = map(int, age.split('-'))
+            subprograms = subprograms.filter(min_age__lte=min_age, max_age__gte=max_age)
+        except:
+            pass
+
+    if coach:
+        subprograms = subprograms.filter(coach__username__icontains=coach)
+
+    age_ranges = ["6-8", "8-10", "10-12", "12-14", "14-16"]
+
+    context = {
         'subprograms': subprograms,
-        'show_create_subprogram': request.user.is_authenticated and request.user.role in ['admin', 'coach'],
         'sport_slug': sport_slug,
-    })
+        'query': query,
+        'gender': gender,
+        'age': age,
+        'coach': coach,
+        'age_ranges': age_ranges,
+    }
+    return render(request, 'academy/subprogram_list.html', context)
+
 
 
 
