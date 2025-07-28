@@ -19,5 +19,7 @@ urlpatterns = [
     path('child/<int:child_id>/delete/', views.child_delete_view, name='child_delete'),
     path('coach/dashboard/', views.coach_dashboard_view, name='coach_dashboard'),
     path('subprogram/<int:subprogram_id>/detail/', views.subprogram_detail_view, name='subprogram_detail'),
+    path('inbox/', views.inbox_view, name='inbox'),
+    path('send-message/<int:recipient_id>/', views.send_message_view, name='send_message'),
     ]
 

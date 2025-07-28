@@ -24,6 +24,9 @@
               <ul>
                 {% for e in child.enrollments.all %}
                   <li>{{ e.subprogram.title }} ({{ e.subprogram.program.get_sport_type_display }})</li>
+                  {% if e.subprogram.coach %}
+                    <a href="{% url 'academy:send_message' e.subprogram.coach.id %}" class="btn btn-outline-secondary mt-2">Contact Coach</a>
+                  {% endif %}
                 {% endfor %}
               </ul>
             {% else %}

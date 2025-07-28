@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import user_passes_test, login_required
-from .models import Program, SubProgram, Child, Enrollment, User
-from .forms import ProgramForm, SubProgramForm, ChildForm, EnrollmentForm
+from .models import Program, SubProgram, Child, Enrollment, User, Message
+from .forms import ProgramForm, SubProgramForm, ChildForm, EnrollmentForm, MessageForm
 from django.contrib import messages
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 
 def home_view(request):
     programs = Program.objects.all()
@@ -331,3 +332,40 @@ def coach_dashboard_view(request):
         'age_options': ['6-8', '8-10', '10-12', '12-14', '14-16'],
     }
     return render(request, 'academy/coach_dashboard.html', context)
+
+
+@login_required
+def inbox_view(request):
+    user = request.user
+    received = Message.objects.filter(recipient=user).order_by('-sent_at')
+    sent = Message.objects.filter(sender=user).order_by('-sent_at')
+
+    Message.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
+    return render(request, 'academy/inbox.html', {
+        'received_messages': received,
+        'sent_messages': sent
+    })
+
+
+@login_required
+def send_message_view(request, recipient_id):
+    from django.shortcuts import get_object_or_404
+
+    recipient = get_object_or_404(User, id=recipient_id)
+    form = MessageForm()
+
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            msg = form.save(commit=False)
+            msg.sender = request.user
+            msg.recipient = recipient
+            msg.save()
+            from django.contrib import messages
+            messages.success(request, "Message sent successfully!")
+            return redirect('academy:inbox')
+
+    return render(request, 'academy/message_form.html', {
+        'form': form,
+        'recipient': recipient,
+    })

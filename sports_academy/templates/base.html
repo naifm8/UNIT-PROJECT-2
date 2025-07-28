@@ -32,6 +32,11 @@
             <a href="{% url 'academy:child_list' %}">My Children</a>
             <a href="{% url 'academy:child_create' %}">+ Add Child</a>
           {% endif %}
+
+          {% if user.role == 'parent' or user.role == 'coach' %}
+            <a class="nav-link" href="{% url 'academy:inbox' %}">Inbox</a>
+          {% endif %}
+
       
           <span>Welcome, {{ user.first_name }}</span>
           <a href="{% url 'accounts:logout' %}">Logout</a>

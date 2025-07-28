@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Send Message{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 600px;">
+  <h3 class="mb-3">Send Message to {{ recipient.first_name }} {{ recipient.last_name }}</h3>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      {{ form.subject.label_tag }}
+      {{ form.subject }}
+    </div>
+    <div class="mb-3">
+      {{ form.content.label_tag }}
+      {{ form.content }}
+    </div>
+    <button type="submit" class="btn btn-dark">Send</button>
+    <a href="{% url 'academy:child_list' %}" class="btn btn-secondary ms-2">Back</a>
+  </form>
+</div>
+{% endblock %}

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Program, SubProgram, Child, Enrollment, User
+from .models import Program, SubProgram, Child, Enrollment, User, Message
 
 class ProgramForm(forms.ModelForm):
     class Meta:
@@ -36,3 +36,8 @@ class EnrollmentForm(forms.ModelForm):
         model = Enrollment
         fields = ['child']
 
+
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['subject', 'content']
