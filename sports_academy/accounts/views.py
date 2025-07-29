@@ -23,8 +23,6 @@ def logout_view(request):
     messages.success(request, "You have been logged out.")
     return redirect('academy:home')
 
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User as DjangoUser  # fallback if needed
 
 def login_view(request):
     if request.user.is_authenticated:

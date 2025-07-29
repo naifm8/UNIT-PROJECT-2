@@ -64,10 +64,9 @@
 
 <div class="container py-3">
 
-  <!-- Filter Form -->
   <form method="get" class="row gx-2 gy-2 align-items-center mb-4 filter-form">
     <div class="col-md-3">
-      <input type="text" name="q" value="{{ query }}" placeholder="Search title" class="form-control">
+      <input type="text" name="q" value="{{ query }}" placeholder="Find programs by title" class="form-control">
     </div>
     <div class="col-md-2">
       <select name="gender" class="form-select">
@@ -86,10 +85,10 @@
       </select>
     </div>
     <div class="col-md-3">
-      <input type="text" name="coach" value="{{ coach }}" placeholder="Coach name" class="form-control">
+      <input type="text" name="coach" value="{{ coach }}" placeholder="Search by coach" class="form-control">
     </div>
     <div class="col-md-2">
-      <button type="submit" class="btn btn-dark w-100 rounded-pill">Filter</button>
+      <button type="submit" class="btn btn-dark w-100 rounded-pill">Search</button>
     </div>
   </form>
 
@@ -100,13 +99,12 @@
     {% endif %}
   </div>
 
-  <!-- SubProgram Cards -->
   <div class="row">
     {% for sub in subprograms %}
       <div class="col-md-4 mb-4">
         {% if user.is_authenticated and user.role in 'admin coach' %}
-          <a href="{% url 'academy:subprogram_edit' sub.id %}" class="btn btn-outline-primary btn-sm">Edit</a>
-          <a href="{% url 'academy:subprogram_delete' sub.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+          <a href="{% url 'academy:subprogram_edit' sub.id %}" class="btn btn-outline btn-sm">Edit</a>
+          <a href="{% url 'academy:subprogram_delete' sub.id %}" class="btn btn-outline btn-sm">Delete</a>
         {% endif %}
         <a href="{% url 'academy:subprogram_detail' sub.id %}" class="text-decoration-none">
           <div class="subprogram-card">
@@ -126,7 +124,6 @@
     {% endfor %}
   </div>
 
-  <!-- Back Home -->
   <div class="home-link">
     <a href="{% url 'academy:home' %}" class="btn btn-outline-secondary rounded-pill">← Home</a>
   </div>

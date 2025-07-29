@@ -304,7 +304,6 @@ def coach_dashboard_view(request):
     subprograms = SubProgram.objects.filter(coach=coach).order_by('-start_date')
     subprograms_with_children = []
 
-    #to search the age (dictionary)
     age_filters = {
         '6-8': (6, 8),
         '8-10': (8, 10),
