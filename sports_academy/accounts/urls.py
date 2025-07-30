@@ -12,3 +12,4 @@ urlpatterns = [
     path('users/<int:user_id>/delete/', views.delete_user_view, name='delete_user'),
     path('add/', views.add_user_view, name='add_user'),
 ]
+
