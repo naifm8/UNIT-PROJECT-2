@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-b0qy$6a3m7z4s@qo_zf@isc9qvwzdps$x^+z7b0#19p(-bsoa9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+
 
 
 # Application definition
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -75,12 +77,27 @@ WSGI_APPLICATION = 'sports_academy.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+DEBUG = os.environ.get("DEBUG", "False") == "True"
+
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get("PGDATABASE"),
+            'USER': os.environ.get("PGUSER"),
+            'PASSWORD': os.environ.get("PGPASSWORD"),
+            'HOST': os.environ.get("PGHOST"),
+            'PORT': os.environ.get("PGPORT"),
+        }
+    }
+
 
 
 # Password validation
@@ -123,6 +140,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # Default primary key field type
